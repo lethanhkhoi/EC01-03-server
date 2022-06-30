@@ -6,8 +6,9 @@ const fs = require("fs")
 const cors = require("cors")
 const routerCustom = require("./routes/index.js")
 const mongoose = require('mongoose');
-
 const website = fs.readFileSync("view/index.html")
+const config =require("./config/database.json")
+
 const app = express();
 app.use(cors())
 app.use(express.json())
@@ -15,6 +16,9 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+mongoose.connect(config.uri).then(()=>{
+  console.log("connect database success")
+})
 routerCustom.bindRouter(app)
 app.use(express.static("./view"));
 
