@@ -1,13 +1,12 @@
 const createError = require('http-errors');
 const express = require('express');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 const fs = require("fs")
 const cors = require("cors")
 const routerCustom = require("./routes/index.js")
 const mongoose = require('mongoose');
 const website = fs.readFileSync("view/index.html")
 const config =require("./config/database.json")
+const database = require("./utils/database")
 
 const app = express();
 app.use(cors())
@@ -16,9 +15,10 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-mongoose.connect(config.uri).then(()=>{
-  console.log("connect database success")
+database.connectDatabase(()=>{
+  console.log("connect success")
 })
+
 routerCustom.bindRouter(app)
 app.use(express.static("./view"));
 
