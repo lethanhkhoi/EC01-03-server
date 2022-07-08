@@ -1,24 +1,31 @@
-commands =[
+commands = [
     {
-        name:"getAll",
-        controller:"user",
-        method:"get",
-        api:"/user",
-        middleware:[]
+        name: "getAll",
+        controller: "user",
+        method: "get",
+        api: "/user",
+        middleware: []
     },
     {
-        name:"login",
-        controller:"user",
-        method:"post",
-        api:"/login",
-        middleware:[]
+        name: "update",
+        controller: "user",
+        method: "patch",
+        api: "/user/:code",
+        middleware: []
     },
     {
-        name:"register",
-        controller:"user",
-        method:"post",
-        api:"/register",
-        middleware:[]
+        name: "login",
+        controller: "user",
+        method: "post",
+        api: "/login",
+        middleware: []
+    },
+    {
+        name: "register",
+        controller: "user",
+        method: "post",
+        api: "/register",
+        middleware: []
     },
 ]
-module.exports= commands
+module.exports = commands
