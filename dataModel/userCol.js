@@ -15,9 +15,15 @@ async function getAll(){
 async function create(data){
     return await database.userModel().insertOne(data)
 }
+async function getDetailByCode (code){
+    return await database.userModel().find({_id : ObjectID(code)})
+}
+
+async function getDetailByEmail (email){
+    return await database.userModel().find({email})
+}
 async function update (code, data){
     data["updatedAt"] = new Date()
-    console.log(code)
     const result= await database.userModel().findOneAndUpdate({_id: ObjectID(code)},
     {
         $set: data
@@ -28,5 +34,7 @@ module.exports={
     getAll,
     create,
     update,
+    getDetailByCode,
+    getDetailByEmail,
     userProperties
 }

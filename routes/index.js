@@ -11,14 +11,18 @@ const controllers = {
 }
 
 const middlewares = {
-
+    authentication: controllers.user.userAuthentication,
 }
 const bindRouter = (app) => {
     for (let i = 0; i < event.length; i++) {
         for (let j = 0; j < event[i].length; j++) {
             let { name, controller, method, api, middleware } = event[i][j]
+            let _middlewares = [];
+            middleware.map(e=>{
+                _middlewares.push(middlewares[e])
+            })
             if (typeof (controllers[controller] == "function")) {
-                app[method](api, ...middleware, controllers[controller][name])
+                app[method](api, ..._middlewares, controllers[controller][name])
             }
         }
     }

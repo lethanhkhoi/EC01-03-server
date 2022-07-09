@@ -9,8 +9,7 @@ const createSecretKey = async (payload) => {
 const decodeToken = async (token) => {
     return jwt.verify(token, config.tokenKey)
 }
-
 module.exports = {
     createSecretKey,
-    decodeToken
+    decodeToken,
 }
