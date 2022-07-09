@@ -12,6 +12,13 @@ commands = [
         method: "post",
         api: "/product",
         middleware: ["authentication"]
+    },
+    {
+        name: "update",
+        controller: "product",
+        method: "patch",
+        api: "/product/:code",
+        middleware: ["authentication"]
     }
 ]
 module.exports = commands

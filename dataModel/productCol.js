@@ -10,7 +10,25 @@ const creatValidation =[
     "description",
     "stock",
     "sold",
+    "supplierId",
     "color"
+]
+
+const productProperties = [
+    "name",
+    "supplierId",
+    "categoryId",
+    "price",
+    "sale",
+    "dimension",
+    "warranty",
+    "description",
+    "stock",
+    "sold",
+    "color",
+    "rate",
+    "image",
+    
 ]
 async function getAll(page, limit, sort, match={}){
     let pipline = null
@@ -22,9 +40,18 @@ async function create (data) {
     data["createdAt"] = new Date()
     return await database.productModel().insertOne(data)
 }
-
+async function update(code, data){
+    data["updateAt"] = new Date()
+    const result= await database.productModel().findOneAndUpdate({_id: ObjectID(code)},
+    {
+        $set: data
+    })
+    return result.value
+}
 module.exports={
     creatValidation,
     getAll,
-    create
+    create,
+    update,
+    productProperties
 }

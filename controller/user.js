@@ -147,6 +147,49 @@ async function userAuthentication (req, res ,next){
     return next();
 }
 
+async function adminAuthentication (req, res ,next){
+    let token = req.headers["token"];
+
+    if (!token) {
+      return res.json({
+        errCode: true,
+        data: "authentication fail",
+      });
+    }
+  
+    try {
+      var payload = await jwt.decodeToken(token);
+    } catch (e) {
+      res.status(401);
+      return res.json({
+        errCode: true,
+        data: "jwt malformed",
+      });
+    }
+  
+    if (!payload) {
+      return res.json({
+        errCode: true,
+        data: "authentication fail",
+      });
+    }
+  
+    let account = [];
+    account = await database.userModel().find({ email: payload, role: 'admin' }).toArray();
+  
+    if (account.length == 0 || account.length > 1) {
+      res.status(401);
+      return res.json({
+        errCode: true,
+        data: "account not found",
+      });
+    }
+  
+    req.user = (({ _id, email, firstName, lastName }) => ({ _id, email, firstName, lastName }))(account[0]);
+  
+    return next();
+}
+
 
 
 module.exports = {
@@ -155,5 +198,6 @@ module.exports = {
     update,
     register,
     forgotPassword,
-    userAuthentication
+    userAuthentication,
+    adminAuthentication
 }

@@ -12,6 +12,7 @@ const controllers = {
 
 const middlewares = {
     authentication: controllers.user.userAuthentication,
+    admin: controllers.user.adminAuthentication,
 }
 const bindRouter = (app) => {
     for (let i = 0; i < event.length; i++) {

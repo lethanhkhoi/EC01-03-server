@@ -24,7 +24,6 @@ async function create(req,res) {
         }
     }
     data.rate = null
-    data.seller = user.email
     data.createdAt = new Date()
     data.image = req.body.image ?? []
     const product = await productCol.create(data)
@@ -33,8 +32,22 @@ async function create(req,res) {
     }
     return res.json({errorCode: null, data: data})
 }
-
+async function update(req, res){
+    const code = req.params.code
+    const data = req.body
+    const update = await productCol.update(code, data)
+    if (!update) {
+        return res.json({ errorCode: true, data: "System error" })
+    }
+    for (property of productCol.productProperties) {
+        if (req.body[property]) {
+            update[property] = req.body[property];
+        }
+    }
+    return res.json ({errorCode: false, data: update})
+}
 module.exports = {
     getAll,
-    create
+    create,
+    update
 }

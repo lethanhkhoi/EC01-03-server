@@ -7,7 +7,8 @@ const userProperties = [
     "address",
     "gender",
     "birthday",
-    "voucher"
+    "voucher",
+    "role"
 ]
 async function getAll(){
     return await database.userModel().find().toArray()
