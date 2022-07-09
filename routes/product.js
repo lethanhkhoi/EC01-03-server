@@ -7,6 +7,13 @@ commands = [
         middleware: []
     },
     {
+        name: "deleteProduct",
+        controller: "product",
+        method: "patch",
+        api: "/product/:code/deleteProduct",
+        middleware: ["authentication"]
+    },
+    {
         name: "create",
         controller: "product",
         method: "post",
@@ -20,5 +27,6 @@ commands = [
         api: "/product/:code",
         middleware: ["authentication"]
     }
+
 ]
 module.exports = commands

@@ -8,7 +8,10 @@ async function getAll(req, res) {
     const sortBy = {
         createdAt: -1
     }
-    const data = await productCol.getAll(page, limit, sortBy)
+    const match = {
+        deletedAt: null
+    }
+    const data = await productCol.getAll(page, limit, sortBy, match)
     if(!data){
         return res.json({errorCode: true, data: "System error"})
     }
@@ -46,8 +49,30 @@ async function update(req, res){
     }
     return res.json ({errorCode: false, data: update})
 }
+
+async function deleteProduct(req, res){
+    const code = req.params.code
+    if(code.includes(":")){
+        return res.json({errorCode: true, data: "Input product code"})
+    }
+    let data = req.body
+    data.deletedAt = new Date()
+    const update = await productCol.update(code, data)
+    if (!update) {
+        return res.json({ errorCode: true, data: "System error" })
+    }
+    for (property of productCol.productProperties) {
+        if (req.body[property]) {
+            update[property] = req.body[property];
+        }
+    }
+    update.deletedAt = data.deletedAt
+    return res.json ({errorCode: false, data: update})
+}
+
 module.exports = {
     getAll,
     create,
-    update
+    update,
+    deleteProduct
 }

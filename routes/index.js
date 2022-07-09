@@ -1,13 +1,16 @@
 const userCommand = require("./user.js")
 const productCommand = require("./product.js")
+const categoryCommand = require("./category.js")
 
 const event = [
     userCommand,
-    productCommand
+    productCommand,
+    categoryCommand
 ]
 const controllers = {
     user: require("../controller/user.js"),
-    product: require("../controller/product")
+    product: require("../controller/product"),
+    category: require("../controller/category")
 }
 
 const middlewares = {
@@ -18,6 +21,9 @@ const bindRouter = (app) => {
     for (let i = 0; i < event.length; i++) {
         for (let j = 0; j < event[i].length; j++) {
             let { name, controller, method, api, middleware } = event[i][j]
+            if (!name) {
+                throw new NotImplementedException();
+              }
             let _middlewares = [];
             middleware.map(e=>{
                 _middlewares.push(middlewares[e])

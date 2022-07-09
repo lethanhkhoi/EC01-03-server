@@ -8,7 +8,10 @@ const saltRounds = 10;
 
 async function getAll(req, res) {
     const data = await userCol.getAll()
-    return res.json({ data })
+    if(!data){
+        return res.json({errorCode: true, data: "system error"})
+    }
+    return res.json({ errorCode: true, data })
 }
 async function login(req, res) {
     const user = await database.userModel().findOne({ email: req.body.email })
