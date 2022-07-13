@@ -6,28 +6,19 @@ commands = [
         api: "/cart",
         middleware: []
     },
-
-    {
-        name: "deleteCart",
-        controller: "cart",
-        method: "patch",
-        api: "/cart/:code/deleteCart",
-        middleware: ["authentication"]
-    },
     {
         name: "create",
         controller: "cart",
         method: "post",
         api: "/cart",
-        middleware: ["authentication"]
+        middleware: []
     },
-    
     {
         name: "update",
         controller: "cart",
         method: "patch",
         api: "/cart/:code",
-        middleware: ["authentication"]
+        middleware: []
     }
 ]
 module.exports = commands
