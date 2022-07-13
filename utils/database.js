@@ -6,7 +6,8 @@ let _userModel = null
 let _productModel = null
 let _categoryModel = null
 let _orderModel = null
-let _cartModel= null;
+let _cartModel= null
+let _supplierModel = null
 
 async function connectDatabase(cb) {
   const client = new MongoClient(config.uri);
@@ -21,6 +22,8 @@ async function connectDatabase(cb) {
     _categoryModel = db.collection("Category")
     _orderModel = db.collection("Order")
     _cartModel = db.collection("Cart")
+    _supplierModel = db.collection("Supplier")
+
     dbClient = client;
 
     cb();
@@ -69,11 +72,20 @@ const cartModel = function () {
   }
 };
 
+const supplierModel = function () {
+  if (_supplierModel == null) {
+    console.log("Instance is null or undefined");
+  } else {
+    return _supplierModel;
+  }
+};
+
 module.exports = {
   userModel,
   productModel,
   categoryModel,
   orderModel,
   cartModel,
+  supplierModel,
   connectDatabase
 }
