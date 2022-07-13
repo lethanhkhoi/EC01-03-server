@@ -1,16 +1,19 @@
 const userCommand = require("./user.js")
 const productCommand = require("./product.js")
 const categoryCommand = require("./category.js")
+const orderCommand = require('./order.js')
 
 const event = [
     userCommand,
     productCommand,
-    categoryCommand
+    categoryCommand,
+    orderCommand
 ]
 const controllers = {
     user: require("../controller/user.js"),
     product: require("../controller/product"),
-    category: require("../controller/category")
+    category: require("../controller/category"),
+    order: require("../controller/order")
 }
 
 const middlewares = {
