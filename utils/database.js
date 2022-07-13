@@ -1,21 +1,23 @@
 const { MongoClient } = require("mongodb");
-const config = require('../config/database.json');
+const config = require("../config/database.json");
 
-let _userModel = null
-let _productModel = null
-let _categoryModel = null
+let _userModel = null;
+let _productModel = null;
+let _categoryModel = null;
+let _cartModel = null;
+
 async function connectDatabase(cb) {
   const client = new MongoClient(config.uri);
   try {
     await client.connect();
-    let db = await client.db('Ecommerce');
+    let db = await client.db("Ecommerce");
     console.log("connect to DB Success", config.uri);
 
     // Authentication
     _userModel = db.collection("User");
-    _productModel = db.collection("Product")
-    _categoryModel = db.collection("Category")
-
+    _productModel = db.collection("Product");
+    _categoryModel = db.collection("Category");
+    _cartModel = db.collection("Cart");
     dbClient = client;
 
     cb();
@@ -49,9 +51,18 @@ const categoryModel = function () {
   }
 };
 
+const cartModel = function () {
+  if (_cartModel == null) {
+    console.log("Instance is null or undefined");
+  } else {
+    return _cartModel;
+  }
+};
+
 module.exports = {
   userModel,
   productModel,
   categoryModel,
-  connectDatabase
-}
+  cartModel,
+  connectDatabase,
+};
