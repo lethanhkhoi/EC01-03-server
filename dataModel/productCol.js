@@ -72,7 +72,7 @@ async function updateMultipleProduct(products) {
   try {
     console.log(products)
     let data = await database.productModel().update(
-      { id: { $in: products.map((item) => item.id) } },
+      { _id: { $in: products.map((item) => item.id) } },
       [
         {
           $set: {
@@ -85,7 +85,7 @@ async function updateMultipleProduct(products) {
                         $filter: {
                           input: products,
                           as: "product",
-                          cond: { $eq: ["$$product.id", '$id'] },
+                          cond: { $eq: ["$$product.id", '$_id'] },
                         },
                       },
                       0,

@@ -49,7 +49,7 @@ async function create(req, res) {
   let newProducts = []
   data.product.map((item, index)=>{
     const newObject = {
-        id: item.id,
+        id: ObjectID(item.id),
         quantity:  checkInStock[index].stock- item.quantity
     }
     newProducts.push(newObject)

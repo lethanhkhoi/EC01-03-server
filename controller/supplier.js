@@ -27,18 +27,18 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-    const code = req.params.code;
-    const data = req.body;
-    const update = await productCol.update(code, data);
-    if (!update) {
-      return res.json({ errorCode: true, data: "System error" });
-    }
-    for (property of supplierCol.supplierProperties) {
-      if (req.body[property]) {
-        update[property] = req.body[property];
-      }
-    }
-    return res.json({ errorCode: false, data: update });
+  const code = req.params.code;
+  const data = req.body;
+  const update = await productCol.update(code, data);
+  if (!update) {
+    return res.json({ errorCode: true, data: "System error" });
   }
+  for (property of supplierCol.supplierProperties) {
+    if (req.body[property]) {
+      update[property] = req.body[property];
+    }
+  }
+  return res.json({ errorCode: false, data: update });
+}
 
-module.exports = [getAll, create,update];
+module.exports = [getAll, create, update];
