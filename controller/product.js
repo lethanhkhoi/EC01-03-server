@@ -1,4 +1,5 @@
 const productCol = require("../dataModel/productCol");
+const ObjectID = require("mongodb").ObjectId;
 const recordPerPage = 10;
 const defaultPage = 1;
 
@@ -20,6 +21,7 @@ async function getAll(req, res) {
 
 async function create(req, res) {
   let data = req.body;
+  data.id = ObjectID().toString()
   const user = req.user;
   for (property of productCol.creatValidation) {
     if (!data[property]) {

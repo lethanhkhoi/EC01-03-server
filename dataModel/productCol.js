@@ -43,7 +43,7 @@ async function create(data) {
 async function update(code, data) {
   data["updateAt"] = new Date();
   const result = await database.productModel().findOneAndUpdate(
-    { _id: ObjectID(code) },
+    { id: code },
     {
       $set: data,
     }
@@ -54,7 +54,7 @@ async function findByProductId(code) {
   const aggregate = [
     {
       $match: {
-        _id: {
+        id: {
           $in: code,
         },
         stock: {
@@ -72,7 +72,7 @@ async function updateMultipleProduct(products) {
   try {
     console.log(products)
     let data = await database.productModel().update(
-      { _id: { $in: products.map((item) => item.id) } },
+      { id: { $in: products.map((item) => item.id) } },
       [
         {
           $set: {
@@ -85,7 +85,7 @@ async function updateMultipleProduct(products) {
                         $filter: {
                           input: products,
                           as: "product",
-                          cond: { $eq: ["$$product.id", '$_id'] },
+                          cond: { $eq: ["$$product.id", '$id'] },
                         },
                       },
                       0,

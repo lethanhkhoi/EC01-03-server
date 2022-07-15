@@ -21,12 +21,13 @@ async function getAll(req, res) {
 }
 async function create(req, res) {
   const data = req.body;
+  data.id = ObjectID().toString()
   for (property of orderCol.creatValidation) {
     if (!data[property]) {
       return res.json({ errorCode: true, data: `Please input ${property}` });
     }
   }
-  const products = data.product.map((item) => ObjectID(item.id));
+  const products = data.product.map((item) => item.id);
   const checkInStock = await productCol.findByProductId(products);
   if (
     !checkInStock ||
@@ -49,7 +50,7 @@ async function create(req, res) {
   let newProducts = []
   data.product.map((item, index)=>{
     const newObject = {
-        id: ObjectID(item.id),
+        id: item.id,
         quantity:  checkInStock[index].stock- item.quantity
     }
     newProducts.push(newObject)

@@ -17,7 +17,7 @@ async function create(data){
     return await database.userModel().insertOne(data)
 }
 async function getDetailByCode (code){
-    return await database.userModel().find({_id : ObjectID(code)})
+    return await database.userModel().find({id : code})
 }
 
 async function getDetailByEmail (email){
@@ -25,7 +25,7 @@ async function getDetailByEmail (email){
 }
 async function update (code, data){
     data["updatedAt"] = new Date()
-    const result= await database.userModel().findOneAndUpdate({_id: ObjectID(code)},
+    const result= await database.userModel().findOneAndUpdate({id: code},
     {
         $set: data
     })

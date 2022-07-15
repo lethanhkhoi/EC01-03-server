@@ -3,6 +3,7 @@ const database = require("../utils/database");
 const jwt = require("../utils/token");
 const bcrypt = require("bcrypt");
 const moment = require("moment");
+const ObjectID = require("mongodb").ObjectId;
 const { sendPass } = require("../helperFunction/helper");
 const saltRounds = 10;
 
@@ -38,6 +39,7 @@ async function register(req, res) {
   }
   const password = await bcrypt.hash(req.body.password, saltRounds);
   const data = {
+    id: ObjectID().toString(),
     email: req.body.email,
     prevPassword: null,
     password: password,
@@ -98,7 +100,7 @@ async function forgotPassword(req, res) {
     return res.json({ errorCode: true, data: "This account is not exist" });
   }
   const newpass = Math.floor(Math.random() * 10000) + 1000;
-  data.password = await bcrypt.hash(newpass, saltRounds);
+  data.password = bcrypt.hash(newpass, saltRounds);
   const update = await userCol.update(user.code, data);
   if (!update) {
     return res.json({ errorCode: true, data: "System error" });
@@ -150,8 +152,8 @@ async function userAuthentication(req, res, next) {
     });
   }
 
-  req.user = (({ _id, email, firstName, lastName }) => ({
-    _id,
+  req.user = (({ id, email, firstName, lastName }) => ({
+    id,
     email,
     firstName,
     lastName,
@@ -201,8 +203,8 @@ async function adminAuthentication(req, res, next) {
     });
   }
 
-  req.user = (({ _id, email, firstName, lastName }) => ({
-    _id,
+  req.user = (({ id, email, firstName, lastName }) => ({
+    id,
     email,
     firstName,
     lastName,
@@ -213,7 +215,6 @@ async function adminAuthentication(req, res, next) {
 
 async function verify(req, res, next) {
   let token = req.headers["token"];
-  console.log(token)
   if (!token) {
     return res.json({
       errCode: true,
@@ -224,7 +225,6 @@ async function verify(req, res, next) {
   try {
     var payload = await jwt.decodeToken(token);
   } catch (e) {
-    res.status(401);
     return res.json({
       errCode: true,
       data: "jwt malformed",
@@ -242,7 +242,6 @@ async function verify(req, res, next) {
   account = await database.userModel().find({ email: payload }).toArray();
 
   if (account.length == 0 || account.length > 1) {
-    res.status(401);
     return res.json({
       errCode: true,
       data: "account not found",

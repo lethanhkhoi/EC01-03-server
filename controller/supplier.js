@@ -1,5 +1,6 @@
 const database = require("../utils/database");
 const supplierCol = require("../dataModel/supplierCol");
+const productCol = require("../dataModel/productCol");
 const { productProperties } = require("../dataModel/productCol");
 const ObjectID = require("mongodb").ObjectId;
 
@@ -13,6 +14,7 @@ async function getAll(req, res) {
 
 async function create(req, res) {
   let data = req.body;
+  data.id = ObjectID().toString();
   for (property in supplierCol.supplierProperties) {
     if (!data[property]) {
       return res.json({ errorCode: true, data: `Lack of ${property}` });
