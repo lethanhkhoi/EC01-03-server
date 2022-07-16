@@ -10,15 +10,20 @@ async function getAll(req, res) {
   const sortBy = {
     createdAt: -1,
   };
-  const match = {
-    deletedAt: null,
-  };
+  let match ={}
+  if(req.query.filters){
+    const filters = req.query.filters
+    match["userId"] = filters["userId"]
+  }
+  match["deletedAt"] = null
   const data = await orderCol.getAll(page, limit, sortBy, match);
   if (!data) {
     return res.json({ errorCode: true, data: "System error" });
   }
   return res.json({ errorCode: null, data });
 }
+
+
 async function create(req, res) {
   const data = req.body;
   data.id = ObjectID().toString()

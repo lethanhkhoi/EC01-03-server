@@ -9,9 +9,14 @@ async function getAll(req, res) {
   const sortBy = {
     createdAt: -1,
   };
-  const match = {
-    deletedAt: null,
-  };
+  let match = {} 
+  if(req.query.filters){
+    const filters =req.query.filters
+    if(filters["name"]){
+      match["name"] = new RegExp([filters["name"]].join(""), "i");
+    }
+  }
+  match["deletedAt"] = null 
   const data = await productCol.getAll(page, limit, sortBy, match);
   if (!data) {
     return res.json({ errorCode: true, data: "System error" });
