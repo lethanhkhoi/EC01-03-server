@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const moment = require("moment");
 const ObjectID = require("mongodb").ObjectId;
 const { sendPass } = require("../helperFunction/helper");
+const cartCol = require("../dataModel/cartCol")
 const saltRounds = 10;
 
 async function getAll(req, res) {
@@ -55,6 +56,11 @@ async function register(req, res) {
     createdAt: new Date(),
   };
   await userCol.create(data);
+  await cartCol.create({
+    id: ObjectID().toString(),
+    userId: data.id,
+    product:[]
+  })
   if (!data.token) {
     data.token = await jwt.createSecretKey(req.body.email);
   }

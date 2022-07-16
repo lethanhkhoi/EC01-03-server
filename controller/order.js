@@ -60,6 +60,7 @@ async function create(req, res) {
   return res.json({ errorCode: null, data: data });
 }
 
+
 module.exports = {
   getAll,
   create,

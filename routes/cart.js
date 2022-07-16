@@ -7,13 +7,6 @@ commands = [
         middleware: []
     },
     {
-        name: "create",
-        controller: "cart",
-        method: "post",
-        api: "/cart",
-        middleware: []
-    },
-    {
         name: "update",
         controller: "cart",
         method: "patch",
