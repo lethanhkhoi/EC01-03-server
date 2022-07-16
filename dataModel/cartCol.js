@@ -19,10 +19,17 @@ async function update(code, data) {
   );
   return result.value;
 }
+async function getOne(code) {
+  const result = await database.cartModel().findOne({
+    id: code,
+  });
+  return result;
+}
 
 module.exports = {
   getAll,
   create,
+  getOne,
   update,
   cartProperties,
 };
