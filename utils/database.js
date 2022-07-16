@@ -8,6 +8,7 @@ let _categoryModel = null
 let _orderModel = null
 let _cartModel= null
 let _supplierModel = null
+let _voucherModel = null
 
 async function connectDatabase(cb) {
   const client = new MongoClient(config.uri);
@@ -23,6 +24,7 @@ async function connectDatabase(cb) {
     _orderModel = db.collection("Order")
     _cartModel = db.collection("Cart")
     _supplierModel = db.collection("Supplier")
+    _voucherModel = db.collection("Voucher")
 
     dbClient = client;
 
@@ -80,6 +82,14 @@ const supplierModel = function () {
   }
 };
 
+const voucherMocel = function () {
+  if (_voucherModel == null) {
+    console.log("Instance is null or undefined");
+  } else {
+    return _voucherModel;
+  }
+};
+
 module.exports = {
   userModel,
   productModel,
@@ -87,5 +97,6 @@ module.exports = {
   orderModel,
   cartModel,
   supplierModel,
+  voucherMocel,
   connectDatabase
 }
