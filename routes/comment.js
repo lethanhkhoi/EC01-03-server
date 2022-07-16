@@ -11,7 +11,7 @@ commands = [
       controller: "comment",
       method: "post",
       api: "/comment",
-      middleware: ["authentication"],
+      middleware: [],
     },
     {
       name: "update",
@@ -20,12 +20,13 @@ commands = [
       api: "/comment/:code",
       middleware: [],
     },
+
     {
         name: "deleteComment",
         controller: "comment",
         method: "patch",
-        api: "/comment/:code/deleteProduct",
-        middleware: ["authentication"]
+        api: "/comment/:code/deleteComment",
+        middleware: []
     },
     
   ];

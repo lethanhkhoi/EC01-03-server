@@ -105,5 +105,6 @@ module.exports = {
   cartModel,
   supplierModel,
   voucherModel,
+  commentModel,
   connectDatabase,
 };
