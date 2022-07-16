@@ -1,14 +1,14 @@
 const { MongoClient } = require("mongodb");
 const config = require("../config/database.json");
 
-
-let _userModel = null
-let _productModel = null
-let _categoryModel = null
-let _orderModel = null
-let _cartModel= null
-let _supplierModel = null
-let _voucherModel = null
+let _userModel = null;
+let _productModel = null;
+let _categoryModel = null;
+let _orderModel = null;
+let _cartModel = null;
+let _supplierModel = null;
+let _voucherModel = null;
+let _commentModel = null;
 
 async function connectDatabase(cb) {
   const client = new MongoClient(config.uri);
@@ -19,13 +19,13 @@ async function connectDatabase(cb) {
 
     // Authentication
     _userModel = db.collection("User");
-    _productModel = db.collection("Product")
-    _categoryModel = db.collection("Category")
-    _orderModel = db.collection("Order")
-    _cartModel = db.collection("Cart")
-    _supplierModel = db.collection("Supplier")
-    _voucherModel = db.collection("Voucher")
-
+    _productModel = db.collection("Product");
+    _categoryModel = db.collection("Category");
+    _orderModel = db.collection("Order");
+    _cartModel = db.collection("Cart");
+    _supplierModel = db.collection("Supplier");
+    _voucherModel = db.collection("Voucher");
+    _commentModel = db.collection("Comment");
     dbClient = client;
 
     cb();
@@ -82,11 +82,18 @@ const supplierModel = function () {
   }
 };
 
-const voucherMocel = function () {
+const voucherModel = function () {
   if (_voucherModel == null) {
     console.log("Instance is null or undefined");
   } else {
     return _voucherModel;
+  }
+};
+const commentModel = function () {
+  if (_commentModel == null) {
+    console.log("Instance is null or undefined");
+  } else {
+    return _commentModel;
   }
 };
 
@@ -97,6 +104,6 @@ module.exports = {
   orderModel,
   cartModel,
   supplierModel,
-  voucherMocel,
-  connectDatabase
-}
+  voucherModel,
+  connectDatabase,
+};

@@ -13,8 +13,8 @@ async function getAll(req, res) {
 async function create(req, res) {
   let data = req.body;
   data.id = ObjectID().toString();
-  for (property in voucherCol.voucherProperties) {
-    if (!data[property]) {
+  for (property of voucherCol.voucherProperties) {
+    if (data[property]===null) {
       return res.json({ errorCode: true, data: `Lack of ${property}` });
     }
   }
@@ -30,6 +30,9 @@ async function update(req, res) {
     const code = req.params.code;
     const data = req.body;
     const update = await voucherCol.update(code, data);
+    console.log(code)
+    console.log(data)
+    console.log(update)
     if (!update) {
       return res.json({ errorCode: true, data: "System error" });
     }
@@ -41,5 +44,5 @@ async function update(req, res) {
     return res.json({ errorCode: false, data: update });
   }
   
-  module.exports = [getAll, create, update];
+  module.exports = {getAll, create, update};
   

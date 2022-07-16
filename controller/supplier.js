@@ -43,4 +43,4 @@ async function update(req, res) {
   return res.json({ errorCode: false, data: update });
 }
 
-module.exports = [getAll, create, update];
+module.exports = { getAll, create, update };

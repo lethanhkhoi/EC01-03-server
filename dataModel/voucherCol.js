@@ -4,20 +4,27 @@ const ObjectID = require("mongodb").ObjectId;
 const voucherProperties = ["name", "price", "status"];
 
 async function getAll() {
-  return await database.voucherMocel().find().toArray();
+  return await database.voucherModel().find().toArray();
 }
 
 async function create(data) {
-  return await database.voucherMocel().insertOne(data);
+  return await database.voucherModel().insertOne(data);
 }
 
 async function update(code, data) {
   data["updatedAt"] = new Date();
-  const result = await database.voucherMocel().findOneAndUpdate(
-    { _id: ObjectID(code) },
+  const result = await database.voucherModel().findOneAndUpdate(
+    { id: code },
     {
       $set: data,
     }
   );
   return result.value;
 }
+
+module.exports = {
+  getAll,
+  create,
+  update,
+  voucherProperties,
+};

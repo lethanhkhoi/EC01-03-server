@@ -1,23 +1,25 @@
 commands = [
   {
-    name: "getAll",
-    controller: "voucher",
-    method: "get",
-    api: "/voucher",
-    middleware: [],
-  },
-  {
     name: "create",
     controller: "voucher",
     method: "post",
-    api: "/voucher/:code",
-    middleware: ["authentication"],
+    api: "/voucher",
+    middleware: [],
   },
+  
   {
     name: "update",
     controller: "voucher",
     method: "put",
     api: "/voucher/:code",
+    middleware: [],
+  },
+
+  {
+    name: "getAll",
+    controller: "voucher",
+    method: "get",
+    api: "/voucher",
     middleware: [],
   },
 ];
