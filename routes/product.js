@@ -26,6 +26,13 @@ commands = [
         method: "patch",
         api: "/product/:code",
         middleware: ["authentication"]
+    },
+    {
+        name: "rating",
+        controller: "product",
+        method: "patch",
+        api: "/productRating/:code",
+        middleware: ["authentication"]
     }
 
 ]

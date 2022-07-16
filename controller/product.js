@@ -52,6 +52,20 @@ async function update(req, res) {
   return res.json({ errorCode: false, data: update });
 }
 
+async function rating(req, res) {
+  const code = req.params.code;
+  const data = req.body;
+  const product = await productCol.getOne(code);
+  if (!product) {
+    return res.json({ errorCode: true, data: "Cannot found this product" });
+  }
+  let rating = data.rating + (parseFloat(product.rating) ?? 0)
+  rating = (rating / 2).toFixed(2)
+  const update = await productCol.update(code,{rating: rating})
+  update.rating = rating
+  return res.json({ errorCode: false, data: update });
+}
+
 async function deleteProduct(req, res) {
   const code = req.params.code;
   if (code.includes(":")) {
@@ -77,4 +91,5 @@ module.exports = {
   create,
   update,
   deleteProduct,
+  rating
 };

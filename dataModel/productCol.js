@@ -36,6 +36,12 @@ async function getAll(page, limit, sort, match = {}) {
   const result = await database.productModel().aggregate(pipline).toArray();
   return result[0].data;
 }
+
+async function getOne(code) {
+  const result = await database.productModel().find({id: code});
+  return result;
+}
+
 async function create(data) {
   data["createdAt"] = new Date();
   return await database.productModel().insertOne(data);
@@ -108,6 +114,7 @@ async function updateMultipleProduct(products) {
 module.exports = {
   creatValidation,
   getAll,
+  getOne,
   create,
   update,
   findByProductId,

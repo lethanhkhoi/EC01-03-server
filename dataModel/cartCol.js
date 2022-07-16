@@ -26,6 +26,10 @@ async function getOne(code) {
   return result;
 }
 
+async function deleteByCheckOut(code){
+
+}
+
 module.exports = {
   getAll,
   create,
