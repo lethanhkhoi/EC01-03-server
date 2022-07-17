@@ -9,14 +9,14 @@ async function getAll(req, res) {
   const sortBy = {
     createdAt: -1,
   };
-  let match = {} 
-  if(req.query.filters){
-    const filters =req.query.filters
-    if(filters["name"]){
+  let match = {};
+  if (req.query.filters) {
+    const filters = req.query.filters;
+    if (filters["name"]) {
       match["name"] = new RegExp([filters["name"]].join(""), "i");
     }
   }
-  match["deletedAt"] = null 
+  match["deletedAt"] = null;
   const data = await productCol.getAll(page, limit, sortBy, match);
   if (!data) {
     return res.json({ errorCode: true, data: "System error" });
@@ -25,17 +25,31 @@ async function getAll(req, res) {
 }
 
 async function getDetail(req, res) {
-  const code = req.params.code
-  const data = await productCol.getOne(code);
+  const code = req.params.code;
+  let data = await productCol.getOne(code);
   if (!data) {
     return res.json({ errorCode: true, data: "System error" });
   }
+  const category = data.category;
+  const match = {
+    category: category,
+    id: {
+      $ne: data.id,
+    },
+  };
+  const relatedProducts = await productCol.getAll(
+    1,
+    4,
+    { createdAt: -1 },
+    match
+  );
+  data.relatedProducts = relatedProducts;
   return res.json({ errorCode: null, data });
 }
 
 async function create(req, res) {
   let data = req.body;
-  data.id = ObjectID().toString()
+  data.id = ObjectID().toString();
   const user = req.user;
   for (property of productCol.creatValidation) {
     if (!data[property]) {
@@ -73,10 +87,10 @@ async function rating(req, res) {
   if (!product) {
     return res.json({ errorCode: true, data: "Cannot found this product" });
   }
-  let rating = data.rating + (parseFloat(product.rating) ?? 0)
-  rating = (rating / 2).toFixed(2)
-  const update = await productCol.update(code,{rating: rating})
-  update.rating = rating
+  let rating = data.rating + (parseFloat(product.rating) ?? 0);
+  rating = (rating / 2).toFixed(2);
+  const update = await productCol.update(code, { rating: rating });
+  update.rating = rating;
   return res.json({ errorCode: false, data: update });
 }
 
@@ -106,5 +120,5 @@ module.exports = {
   update,
   deleteProduct,
   rating,
-  getDetail
+  getDetail,
 };
