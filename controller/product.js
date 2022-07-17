@@ -30,9 +30,9 @@ async function getDetail(req, res) {
   if (!data) {
     return res.json({ errorCode: true, data: "System error" });
   }
-  const category = data.category;
+  const category = data.categoryId;
   const match = {
-    category: category,
+    categoryId: category,
     id: {
       $ne: data.id,
     },
