@@ -1,5 +1,12 @@
 commands = [
     {
+        name: "getDetail",
+        controller: "product",
+        method: "get",
+        api: "/product/:code",
+        middleware: []
+    },
+    {
         name: "getAll",
         controller: "product",
         method: "get",

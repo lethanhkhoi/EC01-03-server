@@ -38,7 +38,7 @@ async function getAll(page, limit, sort, match = {}) {
 }
 
 async function getOne(code) {
-  const result = await database.productModel().find({id: code});
+  const result = await database.productModel().findOne({id: code});
   return result;
 }
 

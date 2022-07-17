@@ -24,6 +24,15 @@ async function getAll(req, res) {
   return res.json({ errorCode: null, data });
 }
 
+async function getDetail(req, res) {
+  const code = req.params.code
+  const data = await productCol.getOne(code);
+  if (!data) {
+    return res.json({ errorCode: true, data: "System error" });
+  }
+  return res.json({ errorCode: null, data });
+}
+
 async function create(req, res) {
   let data = req.body;
   data.id = ObjectID().toString()
@@ -96,5 +105,6 @@ module.exports = {
   create,
   update,
   deleteProduct,
-  rating
+  rating,
+  getDetail
 };
