@@ -26,11 +26,11 @@ function joinProduct(aggregate = []) {
               $mergeObjects: [
                 "$$this",
                 {
-                  code: {
+                  product: {
                     $arrayElemAt: [
-                      "$Product",
+                      "$products",
                       {
-                        $indexOfArray: ["$drugs._id", "$$this.drug"],
+                        $indexOfArray: ["$products.id", "$$this.code"],
                       },
                     ],
                   },
@@ -41,16 +41,13 @@ function joinProduct(aggregate = []) {
         },
       },
     },
-    { $project: { drugs: 0 } }
+    { $project: { "products": 0 } }
   );
-  aggregate.push({
-    $unwind: { path: "$request", preserveNullAndEmptyArrays: true },
-  });
   return aggregate;
 }
 
 async function getAll() {
-  return await database.cartModel().find().toArray();
+  return await database.cartModel().aggregate(joinProduct()).toArray();
 }
 
 async function create(data) {
@@ -66,9 +63,17 @@ async function update(code, data) {
   return result.value;
 }
 async function getOne(code) {
-  const result = await database.cartModel().findOne({
-    userId: code,
-  });
+  const result = await database
+    .cartModel()
+    .aggregate([
+      ...joinProduct(),
+      {
+        $match: {
+          userId: code,
+        },
+      },
+    ])
+    .toArray();
   return result;
 }
 

@@ -4,6 +4,7 @@ const ObjectId = require("mongodb").ObjectId;
 
 async function getOne(req, res) {
   const user = req.user
+  console.log(user.id)
   const cart = await cartCol.getOne(user.id);
   if (!cart) {
     return res.json({ errorCode: true, data: "Cannot found cart" });

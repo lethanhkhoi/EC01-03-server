@@ -5,6 +5,7 @@ const orderCommand = require("./order.js");
 const supplierCommand = require("./supplier.js");
 const voucherCommand = require("./voucher.js");
 const commentCommand = require("./comment.js");
+const cartCommand = require("./cart.js");
 
 const event = [
   userCommand,
@@ -14,6 +15,7 @@ const event = [
   supplierCommand,
   voucherCommand,
   commentCommand,
+  cartCommand
 ];
 const controllers = {
   user: require("../controller/user.js"),
@@ -23,6 +25,7 @@ const controllers = {
   supplier: require("../controller/supplier"),
   voucher: require("../controller/voucher"),
   comment: require("../controller/comment"),
+  cart: require("../controller/cart"),
 };
 
 const middlewares = {
