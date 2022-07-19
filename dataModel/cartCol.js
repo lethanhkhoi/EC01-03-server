@@ -74,7 +74,7 @@ async function getOne(code) {
       },
     ])
     .toArray();
-  return result;
+  return result[0];
 }
 
 async function deleteByCheckOut(code) {}
