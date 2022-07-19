@@ -76,7 +76,6 @@ async function findByProductId(code) {
 
 async function updateMultipleProduct(products) {
   try {
-    console.log(products)
     let data = await database.productModel().update(
       { id: { $in: products.map((item) => item.id) } },
       [

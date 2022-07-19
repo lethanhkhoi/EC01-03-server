@@ -61,7 +61,6 @@ async function create(req, res) {
     newProducts.push(newObject)
   })
   const updateProduct = await productCol.updateMultipleProduct(newProducts)
-  console.log(updateProduct)
   return res.json({ errorCode: null, data: data });
 }
 

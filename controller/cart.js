@@ -2,13 +2,17 @@ const cartCol = require("../dataModel/cartCol");
 const productCol = require("../dataModel/productCol");
 const ObjectId = require("mongodb").ObjectId;
 
-async function getAll(req, res) {
-  const data = await cartCol.getAll();
-  return res.json({ errorCode: null, data });
+async function getOne(req, res) {
+  const user = req.user
+  const cart = await cartCol.getOne(user.id);
+  if (!cart) {
+    return res.json({ errorCode: true, data: "Cannot found cart" });
+  }
+  return res.json({ errorCode: null, data: cart });
 }
 
 async function update(req, res) {
-  //   const user = req.user.id;
+  const user = req.user.id;
   const code = req.params.code;
   let data = req.body;
   data.isIncreased = req.body.isIncreased ?? false;
@@ -59,6 +63,6 @@ async function update(req, res) {
 }
 
 module.exports = {
-  getAll,
+  getOne,
   update,
 };

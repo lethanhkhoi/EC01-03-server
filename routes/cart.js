@@ -7,11 +7,11 @@ commands = [
         middleware: []
     },
     {
-        name: "getAll",
+        name: "getOne",
         controller: "cart",
         method: "get",
         api: "/cart",
-        middleware: []
+        middleware: ['authentication']
     },
 ]
 module.exports = commands
