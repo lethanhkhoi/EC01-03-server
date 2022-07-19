@@ -151,7 +151,6 @@ async function userAuthentication(req, res, next) {
   account = await database.userModel().find({ email: payload }).toArray();
 
   if (account.length == 0 || account.length > 1) {
-    res.status(401);
     return res.json({
       errCode: true,
       data: "account not found",
@@ -181,7 +180,6 @@ async function adminAuthentication(req, res, next) {
   try {
     var payload = await jwt.decodeToken(token);
   } catch (e) {
-    res.status(401);
     return res.json({
       errCode: true,
       data: "jwt malformed",
@@ -202,7 +200,6 @@ async function adminAuthentication(req, res, next) {
     .toArray();
 
   if (account.length == 0 || account.length > 1) {
-    res.status(401);
     return res.json({
       errCode: true,
       data: "account not found",

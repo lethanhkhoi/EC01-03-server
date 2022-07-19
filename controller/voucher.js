@@ -30,9 +30,7 @@ async function update(req, res) {
     const code = req.params.code;
     const data = req.body;
     const update = await voucherCol.update(code, data);
-    console.log(code)
-    console.log(data)
-    console.log(update)
+
     if (!update) {
       return res.json({ errorCode: true, data: "System error" });
     }
