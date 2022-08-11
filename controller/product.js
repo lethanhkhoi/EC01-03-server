@@ -19,9 +19,9 @@ async function getAll(req, res) {
   match["deletedAt"] = null;
   const data = await productCol.getAll(page, limit, sortBy, match);
   if (!data) {
-    return res.json({ errorCode: true, data: "System error" });
+    return res.json({ errorCode: true, data: "System error", metadata: null });
   }
-  return res.json({ errorCode: null, data });
+  return res.json({ errorCode: null, data: data.data, metadata: data.metadata[0] });
 }
 
 async function getDetail(req, res) {

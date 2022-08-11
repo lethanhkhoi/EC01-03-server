@@ -20,7 +20,7 @@ commands = [
     controller: "voucher",
     method: "get",
     api: "/voucher",
-    middleware: [],
+    middleware: ["authentication"],
   },
 ];
 module.exports = commands;

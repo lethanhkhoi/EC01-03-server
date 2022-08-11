@@ -34,7 +34,11 @@ async function getAll(page, limit, sort, match = {}) {
   let pipline = null;
   pipline = dataPagination(match, sort, page, limit);
   const result = await database.productModel().aggregate(pipline).toArray();
-  return result[0].data;
+  const newResult = {
+    metadata: result[0].metadata,
+    data: result[0].data
+  }
+  return newResult;
 }
 
 async function getOne(code) {

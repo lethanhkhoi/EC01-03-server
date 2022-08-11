@@ -1,10 +1,12 @@
 const database = require("../utils/database");
 const ObjectID = require("mongodb").ObjectId;
-
+const { dataPagination } = require("../helperFunction/helper");
 const voucherProperties = ["name", "price", "status"];
 
-async function getAll() {
-  return await database.voucherModel().find().toArray();
+async function getAll(page, limit, sortBy, match) {
+  let pipline = null;
+  pipline = dataPagination(match, sortBy, page, limit);
+  return await database.voucherModel().aggregate(pipline).toArray();
 }
 
 async function create(data) {
