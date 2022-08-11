@@ -6,7 +6,7 @@ commands = [
     api: "/voucher",
     middleware: [],
   },
-  
+
   {
     name: "update",
     controller: "voucher",
@@ -14,12 +14,18 @@ commands = [
     api: "/voucher/:code",
     middleware: [],
   },
-
   {
     name: "getAll",
     controller: "voucher",
     method: "get",
     api: "/voucher",
+    middleware: ["authentication"],
+  },
+  {
+    name: "claim",
+    controller: "voucher",
+    method: "post",
+    api: "/claim/:code",
     middleware: ["authentication"],
   },
 ];

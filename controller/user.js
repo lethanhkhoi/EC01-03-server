@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const moment = require("moment");
 const ObjectID = require("mongodb").ObjectId;
 const { sendPass } = require("../helperFunction/helper");
-const cartCol = require("../dataModel/cartCol")
+const cartCol = require("../dataModel/cartCol");
 const saltRounds = 10;
 
 async function getAll(req, res) {
@@ -16,7 +16,7 @@ async function getAll(req, res) {
   return res.json({ errorCode: true, data });
 }
 async function login(req, res) {
-  try{
+  try {
     const user = await database.userModel().findOne({ email: req.body.email });
     if (!user) {
       return res.json({ errorCode: true, data: "Tai khoan khong ton tai" });
@@ -29,10 +29,9 @@ async function login(req, res) {
       user.token = await jwt.createSecretKey(req.body.email);
     }
     return res.json({ errorCode: null, data: user });
-  }catch(error){
+  } catch (error) {
     return res.json({ errorCode: true, data: error });
   }
-  
 }
 async function register(req, res) {
   const user = await database.userModel().findOne({ email: req.body.email });
@@ -64,8 +63,8 @@ async function register(req, res) {
   await cartCol.create({
     id: ObjectID().toString(),
     userId: data.id,
-    product:[]
-  })
+    product: [],
+  });
   if (!data.token) {
     data.token = await jwt.createSecretKey(req.body.email);
   }
@@ -126,49 +125,53 @@ async function forgotPassword(req, res) {
 }
 
 async function userAuthentication(req, res, next) {
-  let token = req.headers["token"];
-
-  if (!token) {
-    return res.json({
-      errCode: true,
-      data: "authentication fail",
-    });
-  }
-
   try {
-    var payload = await jwt.decodeToken(token);
-  } catch (e) {
-    res.status(401);
-    return res.json({
-      errCode: true,
-      data: "jwt malformed",
-    });
+    let token = req.headers["token"];
+
+    if (!token) {
+      return res.json({
+        errCode: true,
+        data: "authentication fail",
+      });
+    }
+
+    try {
+      var payload = await jwt.decodeToken(token);
+    } catch (e) {
+      res.status(401);
+      return res.json({
+        errCode: true,
+        data: "jwt malformed",
+      });
+    }
+
+    if (!payload) {
+      return res.json({
+        errCode: true,
+        data: "authentication fail",
+      });
+    }
+
+    let account = [];
+    account = await database.userModel().find({ email: payload }).toArray();
+
+    if (account.length == 0 || account.length > 1) {
+      return res.json({
+        errCode: true,
+        data: "account not found",
+      });
+    }
+
+    req.user = (({ id, email, name }) => ({
+      id,
+      email,
+      name,
+    }))(account[0]);
+
+    return next();
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-
-  if (!payload) {
-    return res.json({
-      errCode: true,
-      data: "authentication fail",
-    });
-  }
-
-  let account = [];
-  account = await database.userModel().find({ email: payload }).toArray();
-
-  if (account.length == 0 || account.length > 1) {
-    return res.json({
-      errCode: true,
-      data: "account not found",
-    });
-  }
-
-  req.user = (({ id, email, name }) => ({
-    id,
-    email,
-    name,
-  }))(account[0]);
-
-  return next();
 }
 
 async function adminAuthentication(req, res, next) {
@@ -213,14 +216,14 @@ async function adminAuthentication(req, res, next) {
   req.user = (({ id, email, name }) => ({
     id,
     email,
-    name
+    name,
   }))(account[0]);
 
   return next();
 }
 
 async function verify(req, res, next) {
-  try{
+  try {
     let token = req.headers["token"];
     if (!token) {
       return res.json({
@@ -228,7 +231,7 @@ async function verify(req, res, next) {
         data: "authentication fail",
       });
     }
-  
+
     try {
       var payload = await jwt.decodeToken(token);
     } catch (e) {
@@ -237,36 +240,35 @@ async function verify(req, res, next) {
         data: "jwt malformed",
       });
     }
-  
+
     if (!payload) {
       return res.json({
         errCode: true,
         data: "authentication fail",
       });
     }
-  
+
     let account = [];
     account = await database.userModel().find({ email: payload }).toArray();
-  
+
     if (account.length == 0 || account.length > 1) {
       return res.json({
         errCode: true,
         data: "account not found",
       });
     }
-    account[0].token = token
-  
+    account[0].token = token;
+
     return res.json({
       errCode: null,
       data: account[0],
     });
-  }catch(error){
+  } catch (error) {
     return res.json({
       errCode: true,
       data: "System error",
     });
   }
-  
 }
 
 module.exports = {

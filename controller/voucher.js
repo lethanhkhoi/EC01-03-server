@@ -8,9 +8,9 @@ async function getAll(req, res) {
   const sortBy = {
     createdAt: -1,
   };
-  let match = {}
-  if(req.query.filters){
-    match["user"] = req.query.filters["userId"]
+  let match = {};
+  if (req.query.filters) {
+    match["user"] = req.query.filters["userId"];
   }
   const data = await voucherCol.getAll(page, limit, sortBy, match);
   if (!data) {
@@ -50,5 +50,38 @@ async function update(req, res) {
   }
   return res.json({ errorCode: false, data: update });
 }
+async function claim(req, res) {
+  try {
+    const code = req.params.code;
+    const user = req.user;
+    let match = {
+      $match: {
+        id: code,
+        stock: {
+          $gte: 1,
+        },
+        user: { $ne: user.id },
+      },
+    };
+    const checkValid = await voucherCol.checkAvailable(match);
+    if (!checkValid) {
+      return res.json({ errorCode: true, data: "Cannot claim this voucher" });
+    }
+    let userArray = checkValid[0].user;
+    userArray.push(user.id);
+    const data = {
+      user: userArray,
+      stock: checkValid[0].stock - 1,
+    };
+    const result = await voucherCol.claim(code, data);
+    if (!result) {
+      return res.json({ errorCode: true, data: "Claim voucher failed" });
+    } else {
+      return res.json({ errorCode: null, data: "Claim voucher success" });
+    }
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
+  }
+}
 
-module.exports = { getAll, create, update };
+module.exports = { getAll, create, update, claim };

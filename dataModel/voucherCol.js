@@ -24,9 +24,26 @@ async function update(code, data) {
   return result.value;
 }
 
+async function claim(code, data) {
+  data["updatedAt"] = new Date();
+  const result = await database.voucherModel().findOneAndUpdate(
+    { id: code },
+    {
+      $set: data,
+    }
+  );
+  return result.value;
+}
+
+async function checkAvailable(match){
+  return await database.voucherModel().aggregate([match]).toArray();
+}
+
 module.exports = {
   getAll,
   create,
+  checkAvailable,
   update,
+  claim,
   voucherProperties,
 };
