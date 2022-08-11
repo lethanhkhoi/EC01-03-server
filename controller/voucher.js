@@ -5,10 +5,15 @@ const ObjectID = require("mongodb").ObjectId;
 async function getAll(req, res) {
   const page = req.query.page ?? defaultPage;
   const limit = req.query.limit ?? recordPerPage;
+  const user = req.user
   const sortBy = {
     createdAt: -1,
   };
-  let match = {};
+  let match = {
+    user :{
+      $ne: user.id
+    }
+  };
   if (req.query.filters) {
     match["user"] = req.query.filters["userId"];
   }
