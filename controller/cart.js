@@ -12,12 +12,16 @@ async function getOne(req, res) {
 }
 
 async function update(req, res) {
-  const user = req.user.id;
-  const code = req.params.code;
+  const user = req.user;
   let data = req.body;
   data.isIncreased = req.body.isIncreased ?? false;
   data.isDeleted = req.body.isDeleted ?? false;
-  const cart = await cartCol.getOne(code);
+  for(property of cartCol.cartProperties){
+    if(!data[property]){
+      return res.json({errorCode: true, data:`Please input ${property}`})
+    }
+  }
+  const cart = await cartCol.getOne(user.id);
   if (!cart) {
     return res.json({ errorCode: true, data: "Cannot found cart" });
   }
@@ -39,7 +43,7 @@ async function update(req, res) {
           item.code === data.product.code
             ? {
                 code: item.code,
-                quantity: item.quantity + data.product.quantity,
+                quantity: data.product.quantity ? item.quantity + data.product.quantity : item.quantity + 1,
               }
             : item
         );
@@ -57,7 +61,10 @@ async function update(req, res) {
       }
     }
   }
-  let update = await cartCol.update(code, { product: newProducts, updatedAt: new Date() });
+  let update = await cartCol.update(cart.id, { product: newProducts, updatedAt: new Date() });
+  if(!update){
+    return res.json({errorCode: true, data:"Update fail"})
+  }
   update.product = newProducts;
   return res.json({ errorCode: null, data: update });
 }

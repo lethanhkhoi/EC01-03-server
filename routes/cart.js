@@ -3,8 +3,8 @@ commands = [
         name: "update",
         controller: "cart",
         method: "patch",
-        api: "/cart/:code",
-        middleware: []
+        api: "/cart",
+        middleware: ["authentication"]
     },
     {
         name: "getOne",

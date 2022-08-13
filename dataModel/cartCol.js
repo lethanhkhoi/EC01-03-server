@@ -1,6 +1,6 @@
 const database = require("../utils/database");
 
-const cartProperties = ["userId", "product"];
+const cartProperties = ["product"];
 
 function joinProduct(aggregate = []) {
   aggregate.push(
