@@ -45,7 +45,10 @@ async function update(req, res) {
                 code: item.code,
                 quantity: data.product.quantity ? item.quantity + data.product.quantity : item.quantity + 1,
               }
-            : item
+            : {
+              code: item.code,
+              quantity: item.quantity,
+            }
         );
       }
     } else if (data.isIncreased === false && !data.isDeleted) {
@@ -56,7 +59,10 @@ async function update(req, res) {
                 code: item.code,
                 quantity: data.product.quantity,
               }
-            : item
+            : {
+              code: item.code,
+              quantity: item.quantity,
+            }
         );
       }
     }
