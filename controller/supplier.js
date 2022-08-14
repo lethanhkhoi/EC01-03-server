@@ -9,7 +9,8 @@ async function getAll(req, res) {
   if (!data) {
     return res.json({ errorCode: true, data: "system error" });
   }
-  return res.json({ errorCode: false, data });
+
+  return res.json({ errorCode: null, data });
 }
 
 async function create(req, res) {
@@ -40,7 +41,7 @@ async function update(req, res) {
       update[property] = req.body[property];
     }
   }
-  return res.json({ errorCode: false, data: update });
+  return res.json({ errorCode: null, data: update });
 }
 
 module.exports = { getAll, create, update };

@@ -9,9 +9,12 @@ const supplierProperties =
 ]
 
 async function getAll(){
-    return await database.supplierModel().find().toArray()
+    const result =  await database.supplierModel().aggregate([{ $match: match }]).toArray();
+    return result
 }
-
+async function getOne(name){
+    return await database.supplierModel().findOne({companyName: name})
+}
 async function create(data){
     return await database.supplierModel().insertOne(data)
 }
@@ -29,5 +32,6 @@ module.exports={
     getAll,
     create,
     update,
-    supplierProperties
+    supplierProperties,
+    getOne
 }
