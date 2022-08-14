@@ -41,5 +41,12 @@ commands = [
     api: "/verify",
     middleware: [],
   },
+  {
+    name: "deleteAccount",
+    controller: "user",
+    method: "post",
+    api: "/deleteAccount",
+    middleware: ["admin"],
+  },
 ];
 module.exports = commands;

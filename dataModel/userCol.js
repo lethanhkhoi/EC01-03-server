@@ -26,6 +26,11 @@ async function getDetailByCode(code) {
 async function getDetailByEmail(email) {
   return await database.userModel().find({ email });
 }
+async function destroy(email) {
+  return await database
+    .userModel()
+    .updateOne({ email }, { $set: { deletedAt: new Date() } });
+}
 async function update(code, data) {
   data["updatedAt"] = new Date();
   const result = await database.userModel().findOneAndUpdate(
@@ -37,11 +42,11 @@ async function update(code, data) {
   return result.value;
 }
 module.exports = {
-  getAllAdmin,
   getAll,
   create,
   update,
   getDetailByCode,
   getDetailByEmail,
   userProperties,
+  destroy,
 };

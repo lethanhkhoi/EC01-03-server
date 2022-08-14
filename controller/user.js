@@ -35,6 +35,9 @@ async function login(req, res) {
     if (!user.token) {
       user.token = await jwt.createSecretKey(req.body.email);
     }
+    if (user.deletedAt) {
+      return res.json({ errorCode: true, data: "Tai khoan da bi khoa" });
+    }
     return res.json({ errorCode: null, data: user });
   } catch (error) {
     return res.json({ errorCode: true, data: error });
@@ -102,6 +105,26 @@ async function update(req, res) {
     }
   }
   return res.json({ errorCode: null, data: update });
+}
+async function deleteAccount(req, res) {
+  const email = req.body.email;
+  const user = await userCol.getDetailByEmail(email);
+  if (!user) {
+    return res.json({ errorCode: true, data: "Khong tim thay account nay" });
+  }
+  if (user.deletedAt) {
+    return res.json({ errorCode: true, data: "Account nay da bi ban truoc do" });
+  }
+  const update = await userCol.destroy(email);
+  if (!update) {
+    return res.json({ errorCode: true, data: "System error" });
+  }
+  for (property of userCol.userProperties) {
+    if (req.body[property]) {
+      update[property] = req.body[property];
+    }
+  }
+  return res.json({ errorCode: null, data: "Ban account thanh cong" });
 }
 
 async function forgotPassword(req, res) {
@@ -288,4 +311,5 @@ module.exports = {
   userAuthentication,
   adminAuthentication,
   verify,
+  deleteAccount,
 };
