@@ -8,6 +8,13 @@ const { sendPass } = require("../helperFunction/helper");
 const cartCol = require("../dataModel/cartCol");
 const saltRounds = 10;
 
+async function getAllAdmin(req, res) {
+  const data = await userCol.getAllAdmin();
+  if (!data) {
+    return res.json({ errorCode: true, data: "system error" });
+  }
+  return res.json({ errorCode: true, data });
+}
 async function getAll(req, res) {
   const data = await userCol.getAll();
   if (!data) {
@@ -272,6 +279,7 @@ async function verify(req, res, next) {
 }
 
 module.exports = {
+  getAllAdmin,
   getAll,
   login,
   update,

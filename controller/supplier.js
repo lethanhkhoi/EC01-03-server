@@ -9,7 +9,7 @@ async function getAll(req, res) {
   if (!data) {
     return res.json({ errorCode: true, data: "system error" });
   }
-  return res.json({ errorCode: true, data });
+  return res.json({ errorCode: false, data });
 }
 
 async function create(req, res) {
@@ -25,7 +25,7 @@ async function create(req, res) {
   if (!supplier) {
     return res.json({ errorCode: true, data: "System error" });
   }
-  return res.json({ errorCode: null, data: data });
+  return res.json({ errorCode: false, data: data });
 }
 
 async function update(req, res) {
