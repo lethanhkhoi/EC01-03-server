@@ -42,6 +42,7 @@ async function update(code, data) {
   return result.value;
 }
 module.exports = {
+  getAllAdmin,
   getAll,
   create,
   update,
