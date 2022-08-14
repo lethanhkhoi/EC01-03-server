@@ -38,7 +38,7 @@ async function getAllByAdmin(req, res) {
 async function create(req, res) {
   let data = req.body;
   data.id = ObjectID().toString();
-  for (property of voucherCol.voucherProperties) {
+  for (property of voucherCol.createValidation) {
     if (data[property] === null) {
       return res.json({ errorCode: true, data: `Lack of ${property}` });
     }

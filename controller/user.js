@@ -81,9 +81,9 @@ async function register(req, res) {
   return res.json({ errorCode: null, data: data });
 }
 async function update(req, res) {
-  const code = req.params.code;
+  const email = req.params.code;
   let data = req.body;
-  const user = await userCol.getDetailByEmail(code);
+  const user = await userCol.getDetailByEmail(email);
   if (!user) {
     return res.json({ errorCode: true, data: "Cannot found this account" });
   }
@@ -95,9 +95,9 @@ async function update(req, res) {
     data.password = await bcrypt.hash(req.body.password, saltRounds);
   }
 
-  const update = await userCol.update(code, data);
+  const update = await userCol.update(email, data);
   if (!update) {
-    return res.json({ errorCode: true, data: "System error" });
+    return res.json({ errorCode: true, data: "Update fail" });
   }
   for (property of userCol.userProperties) {
     if (req.body[property]) {

@@ -20,11 +20,13 @@ async function create(data) {
   return await database.userModel().insertOne(data);
 }
 async function getDetailByCode(code) {
-  return await database.userModel().find({ id: code });
+  const result = await database.userModel().find({ id: code }).toArray();
+  return result[0];
 }
 
 async function getDetailByEmail(email) {
-  return await database.userModel().find({ email });
+  const result = await database.userModel().find({ email }).toArray();
+  return result[0];
 }
 async function destroy(email) {
   return await database
@@ -34,7 +36,7 @@ async function destroy(email) {
 async function update(code, data) {
   data["updatedAt"] = new Date();
   const result = await database.userModel().findOneAndUpdate(
-    { id: code },
+    { email: code },
     {
       $set: data,
     }
@@ -50,5 +52,5 @@ module.exports = {
   getDetailByEmail,
   userProperties,
   destroy,
-  getAllAdmin
+  getAllAdmin,
 };
