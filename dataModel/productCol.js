@@ -11,7 +11,6 @@ const creatValidation = [
   "description",
   "stock",
   "supplierId",
-  "color",
 ];
 
 const productProperties = [
@@ -25,7 +24,6 @@ const productProperties = [
   "description",
   "stock",
   "sold",
-  "color",
   "rate",
   "image",
 ];
