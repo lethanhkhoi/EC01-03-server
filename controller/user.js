@@ -94,7 +94,12 @@ async function update(req, res) {
     }
     data.password = await bcrypt.hash(req.body.password, saltRounds);
   }
-
+  if(data.birthday){
+    data.birthday =  req.body.birthday
+    ? moment(data.birthday, "DD/MM/YYYY").utc().toDate()
+    : null;
+  }
+ 
   const update = await userCol.update(email, data);
   if (!update) {
     return res.json({ errorCode: true, data: "Update fail" });
