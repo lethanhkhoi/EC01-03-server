@@ -22,6 +22,13 @@ commands = [
     middleware: ["authentication"],
   },
   {
+    name: "getAllByAdmin",
+    controller: "voucher",
+    method: "get",
+    api: "/voucherAdmin",
+    middleware: ["admin"],
+  },
+  {
     name: "claim",
     controller: "voucher",
     method: "post",

@@ -1,6 +1,8 @@
 const database = require("../utils/database");
 const voucherCol = require("../dataModel/voucherCol");
 const ObjectID = require("mongodb").ObjectId;
+const recordPerPage = 10;
+const defaultPage = 1;
 
 async function getAll(req, res) {
   const page = req.query.page ?? defaultPage;
@@ -23,6 +25,20 @@ async function getAll(req, res) {
   }
   return res.json({ errorCode: null, data: data[0].data });
 }
+
+async function getAllByAdmin(req, res) {
+  const page = req.query.page ?? defaultPage;
+  const limit = req.query.limit ?? recordPerPage;
+  const sortBy = {
+    createdAt: -1,
+  };
+  const data = await voucherCol.getAll(page, limit, sortBy, {});
+  if (!data) {
+    return res.json({ errorCode: true, data: "system error" });
+  }
+  return res.json({ errorCode: null, data: data[0].data });
+}
+
 
 async function create(req, res) {
   let data = req.body;
@@ -89,4 +105,4 @@ async function claim(req, res) {
   }
 }
 
-module.exports = { getAll, create, update, claim };
+module.exports = { getAll, create, update, claim, getAllByAdmin };
