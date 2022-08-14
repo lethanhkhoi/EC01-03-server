@@ -8,7 +8,7 @@ const supplierProperties =
     "address"
 ]
 
-async function getAll(){
+async function getAll(match = {}){
     const result =  await database.supplierModel().aggregate([{ $match: match }]).toArray();
     return result
 }

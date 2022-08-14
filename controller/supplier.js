@@ -16,7 +16,7 @@ async function getAll(req, res) {
 async function create(req, res) {
   let data = req.body;
   data.id = ObjectID().toString();
-  for (property in supplierCol.supplierProperties) {
+  for (property of supplierCol.supplierProperties) {
     if (!data[property]) {
       return res.json({ errorCode: true, data: `Lack of ${property}` });
     }

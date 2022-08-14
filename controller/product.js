@@ -34,8 +34,8 @@ async function getAll(req, res) {
           $in: category.map((item) => item.id),
         };
       }
-      if (filters["supplier"]) {
-        const filterSupplier = filters["supplier"].split(",");
+      if (filters["brand"]) {
+        const filterSupplier = filters["brand"].split(",");
         const supplier = await supplierCol.getAll({
           companyName: { $in: filterSupplier },
         });
