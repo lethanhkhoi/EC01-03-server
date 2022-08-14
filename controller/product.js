@@ -50,6 +50,38 @@ async function getAll(req, res) {
           $in: supplier.map((item) => item.id),
         };
       }
+      if (filters["price"]) {
+        const priceFilter = filters["price"];
+        switch (priceFilter) {
+          case "0":
+            match["price"] = {
+              $gte: 0,
+              $lte: 50,
+            };
+            break;
+          case "1":
+            match["price"] = {
+              $gte: 50,
+              $lte: 100,
+            };
+            break;
+          case "2":
+            match["price"] = {
+              $gte: 100,
+              $lte: 200,
+            };
+            break;
+          case "3":
+            match["price"] = {
+              $gte: 200,
+            };
+            break;
+          default:
+            match["price"] = {
+              $gte: 0,
+            };
+        }
+      }
     }
     match["deletedAt"] = null;
     const data = await productCol.getAll(page, limit, sortBy, match);
@@ -57,7 +89,7 @@ async function getAll(req, res) {
       return res.json({
         errorCode: true,
         data: "System error",
-        metadata: null,
+        metadata: { recordTotal: 0, pageCurrent: page, recordPerPage: limit },
       });
     }
     return res.json({
@@ -105,6 +137,8 @@ async function create(req, res) {
   data.rate = null;
   data.createdAt = new Date();
   data.image = req.body.image ?? [];
+  data.price = parseFloat(req.body.price);
+  data.sold = 0;
   const product = await productCol.create(data);
   if (!product) {
     return res.json({ errorCode: true, data: "System error" });
@@ -123,7 +157,7 @@ async function update(req, res) {
       update[property] = req.body[property];
     }
   }
-  return res.json({ errorCode: false, data: update });
+  return res.json({ errorCode: null, data: update });
 }
 
 async function rating(req, res) {
