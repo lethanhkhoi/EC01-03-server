@@ -36,13 +36,13 @@ async function getAll(page, limit, sort, match = {}) {
   const result = await database.productModel().aggregate(pipline).toArray();
   const newResult = {
     metadata: result[0].metadata,
-    data: result[0].data
-  }
+    data: result[0].data,
+  };
   return newResult;
 }
 
 async function getOne(code) {
-  const result = await database.productModel().findOne({id: code});
+  const result = await database.productModel().findOne({ id: code });
   return result;
 }
 
@@ -94,7 +94,7 @@ async function updateMultipleProduct(products) {
                         $filter: {
                           input: products,
                           as: "product",
-                          cond: { $eq: ["$$product.id", '$id'] },
+                          cond: { $eq: ["$$product.id", "$id"] },
                         },
                       },
                       0,
