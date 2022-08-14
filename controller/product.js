@@ -1,27 +1,73 @@
 const productCol = require("../dataModel/productCol");
+const categoryCol = require("../dataModel/categoryCol");
+const supplierCol = require("../dataModel/supplierCol");
 const ObjectID = require("mongodb").ObjectId;
 const recordPerPage = 10;
 const defaultPage = 1;
 
 async function getAll(req, res) {
-  const page = req.query.page ?? defaultPage;
-  const limit = req.query.limit ?? recordPerPage;
-  const sortBy = {
-    createdAt: -1,
-  };
-  let match = {};
-  if (req.query.filters) {
-    const filters = req.query.filters;
-    if (filters["name"]) {
-      match["name"] = new RegExp([filters["name"]].join(""), "i");
+  try {
+    const page = req.query.page ?? defaultPage;
+    const limit = req.query.limit ?? recordPerPage;
+    const sortBy = {
+      createdAt: -1,
+    };
+    let match = {};
+    if (req.query.filters) {
+      const filters = req.query.filters;
+      if (filters["name"]) {
+        match["name"] = new RegExp([filters["name"]].join(""), "i");
+      }
+      if (filters["category"]) {
+        const filterCategory = filters["category"].split(",");
+        const category = await categoryCol.getAll({
+          name: { $in: filterCategory },
+        });
+        if (!category) {
+          return res.json({
+            errorCode: true,
+            data: "Cannot find this category",
+            metadata: null,
+          });
+        }
+        match["categoryId"] = {
+          $in: category.map((item) => item.id),
+        };
+      }
+      if (filters["brand"]) {
+        const filterSupplier = filters["brand"].split(",");
+        const supplier = await supplierCol.getAll({
+          companyName: { $in: filterSupplier },
+        });
+        if (!supplier) {
+          return res.json({
+            errorCode: true,
+            data: "Cannot find this supplier",
+            metadata: null,
+          });
+        }
+        match["supplierId"] = {
+          $in: supplier.map((item) => item.id),
+        };
+      }
     }
+    match["deletedAt"] = null;
+    const data = await productCol.getAll(page, limit, sortBy, match);
+    if (!data) {
+      return res.json({
+        errorCode: true,
+        data: "System error",
+        metadata: null,
+      });
+    }
+    return res.json({
+      errorCode: null,
+      data: data.data,
+      metadata: data.metadata[0],
+    });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "System error" });
   }
-  match["deletedAt"] = null;
-  const data = await productCol.getAll(page, limit, sortBy, match);
-  if (!data) {
-    return res.json({ errorCode: true, data: "System error", metadata: null });
-  }
-  return res.json({ errorCode: null, data: data.data, metadata: data.metadata[0] });
 }
 
 async function getDetail(req, res) {

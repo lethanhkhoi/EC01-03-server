@@ -10,7 +10,6 @@ const creatValidation = [
   "warranty",
   "description",
   "stock",
-  "sold",
   "supplierId",
   "color",
 ];
@@ -48,6 +47,7 @@ async function getOne(code) {
 
 async function create(data) {
   data["createdAt"] = new Date();
+  data["sold"] = 0;
   return await database.productModel().insertOne(data);
 }
 async function update(code, data) {
