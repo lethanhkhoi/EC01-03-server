@@ -89,7 +89,7 @@ async function getAll(req, res) {
       return res.json({
         errorCode: true,
         data: "System error",
-        metadata: null,
+        metadata: { recordTotal: 0, pageCurrent: page, recordPerPage: limit },
       });
     }
     return res.json({

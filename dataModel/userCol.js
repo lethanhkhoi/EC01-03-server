@@ -49,4 +49,5 @@ module.exports = {
   getDetailByEmail,
   userProperties,
   destroy,
+  getAllAdmin
 };
