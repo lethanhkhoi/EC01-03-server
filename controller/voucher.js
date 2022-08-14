@@ -27,16 +27,11 @@ async function getAll(req, res) {
 }
 
 async function getAllByAdmin(req, res) {
-  const page = req.query.page ?? defaultPage;
-  const limit = req.query.limit ?? recordPerPage;
-  const sortBy = {
-    createdAt: -1,
-  };
-  const data = await voucherCol.getAll(page, limit, sortBy, {});
+  const data = await database.voucherModel().find().toArray();
   if (!data) {
     return res.json({ errorCode: true, data: "system error" });
   }
-  return res.json({ errorCode: null, data: data[0].data });
+  return res.json({ errorCode: null, data: data });
 }
 
 
