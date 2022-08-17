@@ -3,15 +3,13 @@ const { dataPagination } = require("../helperFunction/helper");
 const ObjectID = require("mongodb").ObjectId;
 
 const creatValidation = [
-  "product",
-  "shipId",
-  "userId",
   "name",
   "address",
   "phone",
   "productPrice",
   "shipPrice",
   "totalPrice",
+  "payment",
 ];
 
 async function getAll(page, limit, sort, match = {}) {
@@ -20,12 +18,26 @@ async function getAll(page, limit, sort, match = {}) {
   const result = await database.orderModel().aggregate(pipline).toArray();
   return result[0].data;
 }
-async function create(data){
-    return await database.orderModel().insertOne(data)
+async function create(data) {
+  return await database.orderModel().insertOne(data);
 }
-
+async function getOne(code) {
+  return await database.orderModel().find({ id: code });
+}
+async function update(code, data) {
+  data["updatedAt"] = new Date();
+  const result = await database.orderModel().findOneAndUpdate(
+    { id: code },
+    {
+      $set: data,
+    }
+  );
+  return result.value;
+}
 module.exports = {
   getAll,
   create,
-  creatValidation
+  creatValidation,
+  getOne,
+  update,
 };
