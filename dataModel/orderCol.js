@@ -10,6 +10,7 @@ const creatValidation = [
   "shipPrice",
   "totalPrice",
   "payment",
+  "shippingMethod",
 ];
 
 async function getAll(page, limit, sort, match = {}) {
