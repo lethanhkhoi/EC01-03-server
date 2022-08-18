@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-function dataPagination(match, sort, page = 1, limit = 10) {
+function dataPagination(match, sort, page = 1, limit = 10 ,join = false) {
   const aggregate = [{ $match: match }];
   let data = [];
   data.push({ $sort: sort });
@@ -9,6 +9,9 @@ function dataPagination(match, sort, page = 1, limit = 10) {
     data.push({ $skip: skip });
   }
   data.push({ $limit: parseInt(limit) });
+  if (join) {
+    join.forEach((item) => data.push(item));
+  }
   let facet = {
     metadata: [
       { $count: "recordTotal" },

@@ -83,4 +83,5 @@ module.exports = {
   getOne,
   update,
   cartProperties,
+  joinProduct
 };
