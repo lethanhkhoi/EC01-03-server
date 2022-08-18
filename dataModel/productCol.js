@@ -100,6 +100,25 @@ async function updateMultipleProduct(products) {
                 in: "$$obj.quantity",
               },
             },
+            sold: {
+              $let: {
+                vars: {
+                  obj: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: products,
+                          as: "product",
+                          cond: { $eq: ["$$product.id", "$id"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                },
+                in: "$$obj.sold",
+              },
+            },
           },
         },
       ],

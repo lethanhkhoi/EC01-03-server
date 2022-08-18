@@ -41,7 +41,7 @@ function joinProduct(aggregate = []) {
         },
       },
     },
-    { $project: { "products": 0 } }
+    { $project: { products: 0 } }
   );
   return aggregate;
 }
@@ -76,8 +76,6 @@ async function getOne(code) {
     .toArray();
   return result[0];
 }
-
-async function deleteByCheckOut(code) {}
 
 module.exports = {
   getAll,

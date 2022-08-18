@@ -1,6 +1,6 @@
 const orderCol = require("../dataModel/orderCol");
 const productCol = require("../dataModel/productCol");
-const cartModel = require("../dataModel/cartCol");
+const cartCol = require("../dataModel/cartCol");
 const ObjectID = require("mongodb").ObjectId;
 const { createLink } = require("../utils/payment");
 const defaultPage = 1;
@@ -36,7 +36,7 @@ async function create(req, res) {
         return res.json({ errorCode: true, data: `Please input ${property}` });
       }
     }
-    const cart = await cartModel.getOne(user.id);
+    const cart = await cartCol.getOne(user.id);
     const products = cart.product.map((item) => item.code);
     const checkInStock = await productCol.findByProductId(products);
     if (
@@ -48,7 +48,7 @@ async function create(req, res) {
     }
     checkInStock.map((item, index) => {
       if (
-        item._id.toString() === cart.product[index].id &&
+        item._id.toString() === cart.product[index].code &&
         item.stock < cart.product[index].quantity
       ) {
         return res.json({ errorCode: true, data: `OUT OF STOCK` });
@@ -64,6 +64,7 @@ async function create(req, res) {
       orderId: data.id,
       redirectUrl: null,
     };
+    let status = "Pending";
     if (req.body.payment === "momo") {
       const [orderId, redirectUrl] = await createLink(
         data.id,
@@ -76,6 +77,7 @@ async function create(req, res) {
         orderId: orderId,
         redirectUrl: redirectUrl,
       };
+      status = "New";
     } else if (req.body.payment === "cash") {
       let newProducts = [];
       cart.product.map((item, index) => {
@@ -95,7 +97,7 @@ async function create(req, res) {
     }
 
     data.createdAt = new Date();
-    data.status = "Pending";
+    data.status = status;
     data.product = cart.product.map((item) => {
       return {
         code: item.code,
@@ -117,31 +119,36 @@ async function notifyMomo(req, res) {
     const { orderId, resultCode, amount } = req.body;
     // Verify for price
     let order = await orderCol.getOne(orderId);
-    console.log(order);
     if (order.totalPrice * 23000 !== amount) {
       return res.json({ errorCode: true, data: "Transaction fail" });
     }
 
     // Check for transaction success
     if (resultCode === 0) {
-      order.status = "test"
       const result = await orderCol.update(orderId, order);
-      // let newProducts = [];
-      // cart.product.map((item, index) => {
-      //   const newObject = {
-      //     id: item.id,
-      //     quantity: checkInStock[index].stock - item.quantity,
-      //   };
-      //   newProducts.push(newObject);
-      // });
-      //const updateProduct = await productCol.updateMultipleProduct(newProducts);
-      // if (!updateProduct) {
-      //   return res.json({
-      //     errorCode: true,
-      //     data: "Cannot update products' quantity",
-      //   });
-      // }
-      return res.json({errorCode: null, data: result})
+      let cart = await cartCol.getOne(result.userId);
+
+      const products = cart.product.map((item) => item.code);
+      const checkInStock = await productCol.findByProductId(products);
+      let newProducts = [];
+      cart.product.map((item, index) => {
+        const newObject = {
+          id: item.code,
+          quantity: checkInStock[index].stock - item.quantity,
+          sold: checkInStock[index].sold + item.quantity,
+        };
+        newProducts.push(newObject);
+      });
+      const updateProduct = await productCol.updateMultipleProduct(newProducts);
+      if (!updateProduct) {
+        return res.json({
+          errorCode: true,
+          data: "Cannot update products' quantity",
+        });
+      }
+      cart.product = []
+      await cartCol.update(cart.id,cart )
+      return res.json({ errorCode: null, data: result });
     } else {
       await orderCol.update(orderId, { status: "Cancel" });
     }
