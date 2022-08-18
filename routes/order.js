@@ -11,7 +11,7 @@ commands = [
     controller: "order",
     method: "post",
     api: "/checkout/notifyMomo",
-    middleware: ["authentication"],
+    middleware: [],
   },
   {
     name: "create",

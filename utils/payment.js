@@ -24,7 +24,7 @@ createLink = async (
 
   console.log(redirectHost, ipnHost);
   const redirectUrl = `${redirectHost}/cart`;
-  const ipnUrl = `${ipnHost}/checkout/notifyMomo`;
+  const ipnUrl = `https://ec01-03-server.herokuapp.com/checkout/notifyMomo`;
 
   const orderId = order;
   const orderInfo = `Pay for order ID ${orderId} with Momo`;
