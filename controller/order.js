@@ -52,7 +52,7 @@ async function create(req, res) {
         item.id === cart.product[index].code &&
         item.stock < cart.product[index].quantity
       ) {
-        return res.json({ errorCode: true, data: `OUT OF STOCK` });
+        return res.json({ errorCode: true, data: `Out of stock ${item.name} only has ${item.stock}` });
       }
     });
 
