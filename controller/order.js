@@ -38,6 +38,7 @@ async function create(req, res) {
     }
     const cart = await cartCol.getOne(user.id);
     const products = cart.product.map((item) => item.code);
+    console.log(cart)
     const checkInStock = await productCol.findByProductId(products);
     if (
       !checkInStock ||
@@ -48,7 +49,7 @@ async function create(req, res) {
     }
     checkInStock.map((item, index) => {
       if (
-        item._id.toString() === cart.product[index].code &&
+        item.id === cart.product[index].code &&
         item.stock < cart.product[index].quantity
       ) {
         return res.json({ errorCode: true, data: `OUT OF STOCK` });

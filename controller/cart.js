@@ -26,14 +26,20 @@ async function update(req, res) {
     return res.json({ errorCode: true, data: "Cannot found cart" });
   }
   let newProducts = [];
-  const products = cart.product;
+  let products = cart.product;
   let productsCode = products.map((item) => item.code);
   if (!productsCode.includes(data.product.code)) {
     if (data.isDeleted === true) {
       return res.json({ errorCode: true, data: "Cannot delete this product" });
     }
+    const tempProduct  = products.map((item) => {
+      return {
+        code: item.code,
+        quantity: item.quantity
+      }
+    });
     newProducts =
-      products.length !== 0 ? [...products, data.product] : [data.product];
+      products.length !== 0 ? [...tempProduct, data.product] : [data.product];
   } else {
     if (data.isDeleted === true) {
       newProducts = products.filter((item) => item.code !== data.product.code);

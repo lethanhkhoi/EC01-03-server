@@ -23,7 +23,7 @@ createLink = async (
   const secretKey = "KItonNacd1IPZ3vJKc1IlFeyCmpwRsJL";
 
   console.log(redirectHost, ipnHost);
-  const redirectUrl = `${redirectHost}/cart`;
+  const redirectUrl = `${redirectHost}`;
   const ipnUrl = `https://ec01-03-server.herokuapp.com/checkout/notifyMomo`;
 
   const orderId = order;
