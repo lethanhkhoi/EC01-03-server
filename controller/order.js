@@ -114,21 +114,18 @@ async function create(req, res) {
 }
 async function notifyMomo(req, res) {
   try {
-    console.log("TEST")
     const { orderId, resultCode, amount } = req.body;
-    console.log(orderId);
-    console.log(resultCode);
-    console.log(amount);
     // Verify for price
-    const order = await orderCol.getOne(orderId);
-    if (+order.final_price !== amount) {
+    let order = await orderCol.getOne(orderId);
+    console.log(order);
+    if (order.totalPrice * 23000 !== amount) {
       return res.json({ errorCode: true, data: "Transaction fail" });
     }
 
     // Check for transaction success
     if (resultCode === 0) {
-      const result = await orderCol.update(orderId, { status: "Pending" });
-      console.log(result);
+      order.status = "test"
+      const result = await orderCol.update(orderId, order);
       // let newProducts = [];
       // cart.product.map((item, index) => {
       //   const newObject = {
@@ -138,16 +135,16 @@ async function notifyMomo(req, res) {
       //   newProducts.push(newObject);
       // });
       //const updateProduct = await productCol.updateMultipleProduct(newProducts);
-      if (!updateProduct) {
-        return res.json({
-          errorCode: true,
-          data: "Cannot update products' quantity",
-        });
-      }
+      // if (!updateProduct) {
+      //   return res.json({
+      //     errorCode: true,
+      //     data: "Cannot update products' quantity",
+      //   });
+      // }
+      return res.json({errorCode: null, data: result})
     } else {
       await orderCol.update(orderId, { status: "Cancel" });
     }
-
     // Response for acknowledge
   } catch (err) {
     return res.json({ errorCode: true, data: "System error" });

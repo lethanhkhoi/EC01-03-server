@@ -22,7 +22,7 @@ async function create(data) {
   return await database.orderModel().insertOne(data);
 }
 async function getOne(code) {
-  return await database.orderModel().find({ id: code });
+  return await database.orderModel().findOne({ id: code });
 }
 async function update(code, data) {
   data["updatedAt"] = new Date();
