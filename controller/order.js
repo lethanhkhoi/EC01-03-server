@@ -38,7 +38,6 @@ async function create(req, res) {
     }
     const cart = await cartCol.getOne(user.id);
     const products = cart.product.map((item) => item.code);
-    console.log(cart);
     const checkInStock = await productCol.findByProductId(products);
     if (
       !checkInStock ||
@@ -88,6 +87,7 @@ async function create(req, res) {
         const newObject = {
           id: item.id,
           quantity: checkInStock[index].stock - item.quantity,
+          price: item.price * parseFloat(item.sale)
         };
         newProducts.push(newObject);
       });
