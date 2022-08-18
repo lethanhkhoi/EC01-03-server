@@ -38,7 +38,7 @@ async function create(req, res) {
     }
     const cart = await cartCol.getOne(user.id);
     const products = cart.product.map((item) => item.code);
-    console.log(cart)
+    console.log(cart);
     const checkInStock = await productCol.findByProductId(products);
     if (
       !checkInStock ||
@@ -52,7 +52,10 @@ async function create(req, res) {
         item.id === cart.product[index].code &&
         item.stock < cart.product[index].quantity
       ) {
-        return res.json({ errorCode: true, data: `Out of stock ${item.name} only has ${item.stock}` });
+        return res.json({
+          errorCode: true,
+          data: `Out of stock ${item.name} only has ${item.stock}`,
+        });
       }
     });
 
@@ -105,6 +108,8 @@ async function create(req, res) {
         quantity: item.quantity,
       };
     });
+    data.email = user.email;
+    delete data.userId;
     const order = await orderCol.create(data);
     if (!order) {
       return res.json({ errorCode: true, data: "System error" });
@@ -126,6 +131,7 @@ async function notifyMomo(req, res) {
 
     // Check for transaction success
     if (resultCode === 0) {
+      order.status = "Pending";
       const result = await orderCol.update(orderId, order);
       let cart = await cartCol.getOne(result.userId);
 
@@ -147,8 +153,8 @@ async function notifyMomo(req, res) {
           data: "Cannot update products' quantity",
         });
       }
-      cart.product = []
-      await cartCol.update(cart.id,cart )
+      cart.product = [];
+      await cartCol.update(cart.id, cart);
       return res.json({ errorCode: null, data: result });
     } else {
       await orderCol.update(orderId, { status: "Cancel" });
