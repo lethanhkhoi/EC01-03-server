@@ -13,8 +13,7 @@ const userProperties = [
 ];
 const validation = [
   "email",
-  "password",
-  "confirmPassword",
+  "password"
 ];
 async function getAllAdmin() {
   return await database.userModel().find({ role: "admin" }).toArray();
