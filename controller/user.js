@@ -51,7 +51,7 @@ async function register(req, res) {
   try {
     const validation = req.body;
     for (property of userCol.validation) {
-      if (validation[property] === null) {
+      if (validation[property] === null || validation[property] === "") {
         return res.json({ errorCode: true, data: `Lack of ${property}` });
       }
     }
