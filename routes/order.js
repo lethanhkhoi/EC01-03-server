@@ -1,5 +1,12 @@
 commands = [
   {
+    name: "getOne",
+    controller: "order",
+    method: "get",
+    api: "/order/:code",
+    middleware: ["authentication"],
+  },
+  {
     name: "getAll",
     controller: "order",
     method: "get",
