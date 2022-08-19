@@ -155,7 +155,7 @@ async function unban(req, res) {
       update[property] = req.body[property];
     }
   }
-  return res.json({ errorCode: null, data: "Ban account thanh cong" });
+  return res.json({ errorCode: null, data: "Unban account thanh cong" });
 }
 
 async function forgotPassword(req, res) {
