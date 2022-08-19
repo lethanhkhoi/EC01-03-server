@@ -4,14 +4,14 @@ commands = [
     controller: "user",
     method: "get",
     api: "/admin",
-    middleware: [],
+    middleware: ["admin"],
   },
   {
     name: "getAll",
     controller: "user",
     method: "get",
     api: "/user",
-    middleware: [],
+    middleware: ["admin"],
   },
   {
     name: "update",
