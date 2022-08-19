@@ -87,7 +87,7 @@ async function create(req, res) {
         const newObject = {
           id: item.id,
           quantity: checkInStock[index].stock - item.quantity,
-          price: item.price * parseFloat(item.sale)
+          price: item.product.price * parseFloat(item.product.sale)
         };
         newProducts.push(newObject);
       });
@@ -106,7 +106,7 @@ async function create(req, res) {
       return {
         code: item.code,
         quantity: item.quantity,
-        price: item.price * parseFloat(item.sale)
+        price: item.product.price * parseFloat(item.product.sale)
       };
     });
     data.email = user.email;
@@ -165,9 +165,13 @@ async function notifyMomo(req, res) {
     return res.json({ errorCode: true, data: "System error" });
   }
 }
+async function getOne(req,res){
+  
+}
 
 module.exports = {
   getAll,
   create,
   notifyMomo,
+  getOne
 };
