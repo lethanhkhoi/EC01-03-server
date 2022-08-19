@@ -179,9 +179,24 @@ async function getOne(req, res) {
   }
 }
 
+async function update(req, res) {
+  try {
+    const id = req.params.code;
+    const data = req.body;
+    const result = await orderCol.update(id, data);
+    if (!result) {
+      return res.json({ errorCode: true, data: "Update fail" });
+    }
+    return res.json({ errorCode: true, data: data });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "System error" });
+  }
+}
+
 module.exports = {
   getAll,
   create,
   notifyMomo,
   getOne,
+  update,
 };

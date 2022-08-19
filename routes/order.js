@@ -7,6 +7,13 @@ commands = [
     middleware: ["authentication"],
   },
   {
+    name: "update",
+    controller: "order",
+    method: "post",
+    api: "/order/:code",
+    middleware: ["admin"],
+  },
+  {
     name: "getAll",
     controller: "order",
     method: "get",
