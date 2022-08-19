@@ -106,6 +106,7 @@ async function create(req, res) {
       return {
         code: item.code,
         quantity: item.quantity,
+        price: item.price * parseFloat(item.sale)
       };
     });
     data.email = user.email;

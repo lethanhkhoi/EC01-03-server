@@ -44,8 +44,15 @@ commands = [
   {
     name: "deleteAccount",
     controller: "user",
-    method: "post",
-    api: "/deleteAccount",
+    method: "patch",
+    api: "/deleteAccount/:code",
+    middleware: ["admin"],
+  },
+  {
+    name: "unban",
+    controller: "user",
+    method: "patch",
+    api: "/unban/:code",
     middleware: ["admin"],
   },
 ];

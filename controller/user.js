@@ -111,8 +111,8 @@ async function update(req, res) {
   return res.json({ errorCode: null, data: update });
 }
 async function deleteAccount(req, res) {
-  const email = req.body.email;
-  const user = await userCol.getDetailByEmail(email);
+  const id = req.params.code;
+  const user = await userCol.getDetailByCode(id);
   if (!user) {
     return res.json({ errorCode: true, data: "Khong tim thay account nay" });
   }
@@ -122,7 +122,31 @@ async function deleteAccount(req, res) {
       data: "Account nay da bi ban truoc do",
     });
   }
-  const update = await userCol.destroy(email);
+  const update = await userCol.destroy(id);
+  if (!update) {
+    return res.json({ errorCode: true, data: "System error" });
+  }
+  for (property of userCol.userProperties) {
+    if (req.body[property]) {
+      update[property] = req.body[property];
+    }
+  }
+  return res.json({ errorCode: null, data: "Ban account thanh cong" });
+}
+
+async function unban(req, res) {
+  const id = req.params.code;
+  const user = await userCol.getDetailByCode(id);
+  if (!user) {
+    return res.json({ errorCode: true, data: "Khong tim thay account nay" });
+  }
+  if (!user.deletedAt) {
+    return res.json({
+      errorCode: true,
+      data: "Account nay chua bi ban truoc do",
+    });
+  }
+  const update = await userCol.unban(id);
   if (!update) {
     return res.json({ errorCode: true, data: "System error" });
   }
@@ -323,4 +347,5 @@ module.exports = {
   adminAuthentication,
   verify,
   deleteAccount,
+  unban
 };

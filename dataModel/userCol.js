@@ -28,10 +28,15 @@ async function getDetailByEmail(email) {
   const result = await database.userModel().find({ email }).toArray();
   return result[0];
 }
-async function destroy(email) {
+async function destroy(id) {
   return await database
     .userModel()
-    .updateOne({ email }, { $set: { deletedAt: new Date() } });
+    .updateOne({ id }, { $set: { deletedAt: new Date() } });
+}
+async function unban(id) {
+  return await database
+    .userModel()
+    .updateOne({ id }, { $set: { deletedAt: null } });
 }
 async function update(code, data) {
   data["updatedAt"] = new Date();
@@ -53,4 +58,5 @@ module.exports = {
   userProperties,
   destroy,
   getAllAdmin,
+  unban
 };
