@@ -7,22 +7,26 @@ const defaultPage = 1;
 const defaultLimit = 10;
 
 async function getAll(req, res) {
-  const limit = req.query.limit ?? defaultLimit;
-  const page = req.query.limit ?? defaultPage;
-  const sortBy = {
-    createdAt: -1,
-  };
-  let match = {};
-  if (req.query.filters) {
-    const filters = req.query.filters;
-    match["userId"] = filters["userId"];
+  try {
+    const limit = req.query.limit ?? defaultLimit;
+    const page = req.query.limit ?? defaultPage;
+    const sortBy = {
+      createdAt: -1,
+    };
+    let match = {};
+    if (req.query.filters) {
+      const filters = req.query.filters;
+      match["userId"] = filters["userId"];
+    }
+    match["deletedAt"] = null;
+    const data = await orderCol.getAll(page, limit, sortBy, match);
+    if (!data) {
+      return res.json({ errorCode: true, data: "System error" });
+    }
+    return res.json({ errorCode: null, data });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  match["deletedAt"] = null;
-  const data = await orderCol.getAll(page, limit, sortBy, match);
-  if (!data) {
-    return res.json({ errorCode: true, data: "System error" });
-  }
-  return res.json({ errorCode: null, data });
 }
 
 async function create(req, res) {
@@ -102,12 +106,12 @@ async function create(req, res) {
     data.createdAt = new Date();
     data.status = status;
     data.product = cart.product.map((item) => {
-
       return {
         code: item.code,
         quantity: item.quantity,
         price:
-          item.product.price * (100 - parseFloat(item.product.sale)) /100 * item.quantity,
+          ((item.product.price * (100 - parseFloat(item.product.sale))) / 100) *
+          item.quantity,
       };
     });
     data.email = user.email;

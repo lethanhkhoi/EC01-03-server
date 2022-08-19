@@ -103,95 +103,115 @@ async function getAll(req, res) {
 }
 
 async function getDetail(req, res) {
-  const code = req.params.code;
-  let data = await productCol.getOne(code);
-  if (!data) {
-    return res.json({ errorCode: true, data: "System error" });
+  try {
+    const code = req.params.code;
+    let data = await productCol.getOne(code);
+    if (!data) {
+      return res.json({ errorCode: true, data: "System error" });
+    }
+    const category = data.categoryId;
+    const match = {
+      categoryId: category,
+      id: {
+        $ne: data.id,
+      },
+    };
+    const relatedProducts = await productCol.getAll(
+      1,
+      4,
+      { createdAt: -1 },
+      match
+    );
+    data.relatedProducts = relatedProducts;
+    return res.json({ errorCode: null, data });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  const category = data.categoryId;
-  const match = {
-    categoryId: category,
-    id: {
-      $ne: data.id,
-    },
-  };
-  const relatedProducts = await productCol.getAll(
-    1,
-    4,
-    { createdAt: -1 },
-    match
-  );
-  data.relatedProducts = relatedProducts;
-  return res.json({ errorCode: null, data });
 }
 
 async function create(req, res) {
-  let data = req.body;
-  data.id = ObjectID().toString();
-  const user = req.user;
-  for (property of productCol.creatValidation) {
-    if (!data[property]) {
-      return res.json({ errorCode: true, data: `Please input ${property}` });
+  try {
+    let data = req.body;
+    data.id = ObjectID().toString();
+    const user = req.user;
+    for (property of productCol.creatValidation) {
+      if (!data[property]) {
+        return res.json({ errorCode: true, data: `Please input ${property}` });
+      }
     }
+    data.rate = null;
+    data.createdAt = new Date();
+    data.image = req.body.image ?? [];
+    data.price = parseFloat(req.body.price);
+    data.sold = 0;
+    const product = await productCol.create(data);
+    if (!product) {
+      return res.json({ errorCode: true, data: "System error" });
+    }
+    return res.json({ errorCode: null, data: data });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  data.rate = null;
-  data.createdAt = new Date();
-  data.image = req.body.image ?? [];
-  data.price = parseFloat(req.body.price);
-  data.sold = 0;
-  const product = await productCol.create(data);
-  if (!product) {
-    return res.json({ errorCode: true, data: "System error" });
-  }
-  return res.json({ errorCode: null, data: data });
 }
 async function update(req, res) {
-  const code = req.params.code;
-  const data = req.body;
-  const update = await productCol.update(code, data);
-  if (!update) {
-    return res.json({ errorCode: true, data: "System error" });
-  }
-  for (property of productCol.productProperties) {
-    if (req.body[property]) {
-      update[property] = req.body[property];
+  try {
+    const code = req.params.code;
+    const data = req.body;
+    const update = await productCol.update(code, data);
+    if (!update) {
+      return res.json({ errorCode: true, data: "System error" });
     }
+    for (property of productCol.productProperties) {
+      if (req.body[property]) {
+        update[property] = req.body[property];
+      }
+    }
+    return res.json({ errorCode: null, data: update });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  return res.json({ errorCode: null, data: update });
 }
 
 async function rating(req, res) {
-  const code = req.params.code;
-  const data = req.body;
-  const product = await productCol.getOne(code);
-  if (!product) {
-    return res.json({ errorCode: true, data: "Cannot found this product" });
+  try {
+    const code = req.params.code;
+    const data = req.body;
+    const product = await productCol.getOne(code);
+    if (!product) {
+      return res.json({ errorCode: true, data: "Cannot found this product" });
+    }
+    let rating = data.rating + (parseFloat(product.rating) ?? 0);
+    rating = (rating / 2).toFixed(2);
+    const update = await productCol.update(code, { rating: rating });
+    update.rating = rating;
+    return res.json({ errorCode: false, data: update });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  let rating = data.rating + (parseFloat(product.rating) ?? 0);
-  rating = (rating / 2).toFixed(2);
-  const update = await productCol.update(code, { rating: rating });
-  update.rating = rating;
-  return res.json({ errorCode: false, data: update });
 }
 
 async function deleteProduct(req, res) {
-  const code = req.params.code;
-  if (code.includes(":")) {
-    return res.json({ errorCode: true, data: "Input product code" });
-  }
-  let data = req.body;
-  data.deletedAt = new Date();
-  const update = await productCol.update(code, data);
-  if (!update) {
-    return res.json({ errorCode: true, data: "System error" });
-  }
-  for (property of productCol.productProperties) {
-    if (req.body[property]) {
-      update[property] = req.body[property];
+  try {
+    const code = req.params.code;
+    if (code.includes(":")) {
+      return res.json({ errorCode: true, data: "Input product code" });
     }
+    let data = req.body;
+    data.deletedAt = new Date();
+    const update = await productCol.update(code, data);
+    if (!update) {
+      return res.json({ errorCode: true, data: "System error" });
+    }
+    for (property of productCol.productProperties) {
+      if (req.body[property]) {
+        update[property] = req.body[property];
+      }
+    }
+    update.deletedAt = data.deletedAt;
+    return res.json({ errorCode: false, data: update });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  update.deletedAt = data.deletedAt;
-  return res.json({ errorCode: false, data: update });
 }
 
 module.exports = {

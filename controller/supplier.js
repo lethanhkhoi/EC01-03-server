@@ -5,43 +5,55 @@ const { productProperties } = require("../dataModel/productCol");
 const ObjectID = require("mongodb").ObjectId;
 
 async function getAll(req, res) {
-  const data = await supplierCol.getAll();
-  if (!data) {
+  try {
+    const data = await supplierCol.getAll();
+    if (!data) {
+      return res.json({ errorCode: true, data: "system error" });
+    }
+
+    return res.json({ errorCode: null, data });
+  } catch (error) {
     return res.json({ errorCode: true, data: "system error" });
   }
-
-  return res.json({ errorCode: null, data });
 }
 
 async function create(req, res) {
-  let data = req.body;
-  data.id = ObjectID().toString();
-  for (property of supplierCol.supplierProperties) {
-    if (!data[property]) {
-      return res.json({ errorCode: true, data: `Lack of ${property}` });
+  try {
+    let data = req.body;
+    data.id = ObjectID().toString();
+    for (property of supplierCol.supplierProperties) {
+      if (!data[property]) {
+        return res.json({ errorCode: true, data: `Lack of ${property}` });
+      }
     }
+    data.createdAt = new Date();
+    const supplier = await supplierCol.create(data);
+    if (!supplier) {
+      return res.json({ errorCode: true, data: "System error" });
+    }
+    return res.json({ errorCode: false, data: data });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  data.createdAt = new Date();
-  const supplier = await supplierCol.create(data);
-  if (!supplier) {
-    return res.json({ errorCode: true, data: "System error" });
-  }
-  return res.json({ errorCode: false, data: data });
 }
 
 async function update(req, res) {
-  const code = req.params.code;
-  const data = req.body;
-  const update = await productCol.update(code, data);
-  if (!update) {
-    return res.json({ errorCode: true, data: "System error" });
-  }
-  for (property of supplierCol.supplierProperties) {
-    if (req.body[property]) {
-      update[property] = req.body[property];
+  try {
+    const code = req.params.code;
+    const data = req.body;
+    const update = await productCol.update(code, data);
+    if (!update) {
+      return res.json({ errorCode: true, data: "System error" });
     }
+    for (property of supplierCol.supplierProperties) {
+      if (req.body[property]) {
+        update[property] = req.body[property];
+      }
+    }
+    return res.json({ errorCode: null, data: update });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
   }
-  return res.json({ errorCode: null, data: update });
 }
 
 module.exports = { getAll, create, update };

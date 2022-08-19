@@ -1,14 +1,17 @@
-const categoryCol = require('../dataModel/categoryCol')
-
+const categoryCol = require("../dataModel/categoryCol");
 
 async function getAll(req, res) {
-    const data = await categoryCol.getAll()
-    if(!data){
-        return res.json({ errorCode: true, data: "system error" })
+  try {
+    const data = await categoryCol.getAll();
+    if (!data) {
+      return res.json({ errorCode: true, data: "system error" });
     }
-    return res.json({ errorCode: null, data })
+    return res.json({ errorCode: null, data });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
+  }
 }
 
 module.exports = {
-    getAll,
-}
+  getAll,
+};

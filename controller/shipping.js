@@ -1,11 +1,15 @@
 const shippingCol = require("../dataModel/shippingCol");
 const ObjectID = require("mongodb").ObjectId;
 async function getAll(req, res) {
-  const data = await shippingCol.getAll();
-  if (!data) {
+  try {
+    const data = await shippingCol.getAll();
+    if (!data) {
+      return res.json({ errorCode: true, data: "system error" });
+    }
+    return res.json({ errorCode: null, data });
+  } catch (error) {
     return res.json({ errorCode: true, data: "system error" });
   }
-  return res.json({ errorCode: null, data });
 }
 
 async function create(req, res) {
