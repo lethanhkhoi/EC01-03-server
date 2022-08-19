@@ -1,6 +1,7 @@
 const database = require("../utils/database");
 const ObjectID = require("mongodb").ObjectId;
 const userProperties = [
+  "email",
   "name",
   "password",
   "phone",
@@ -9,6 +10,11 @@ const userProperties = [
   "birthday",
   "voucher",
   "role",
+];
+const validation = [
+  "email",
+  "password",
+  "confirmPassword",
 ];
 async function getAllAdmin() {
   return await database.userModel().find({ role: "admin" }).toArray();
@@ -58,5 +64,6 @@ module.exports = {
   userProperties,
   destroy,
   getAllAdmin,
-  unban
+  unban,
+  validation
 };

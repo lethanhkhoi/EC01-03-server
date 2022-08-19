@@ -44,6 +44,12 @@ async function login(req, res) {
   }
 }
 async function register(req, res) {
+  const validation = req.body;
+  for (property of userCol.validation) {
+    if (validation[property] === null) {
+      return res.json({ errorCode: true, data: `Lack of ${property}` });
+    }
+  }
   const user = await database.userModel().findOne({ email: req.body.email });
   if (user) {
     return res.json({ errorCode: true, data: "Tai khoan da ton tai" });
@@ -58,10 +64,10 @@ async function register(req, res) {
     email: req.body.email,
     prevPassword: null,
     password: password,
-    name: req.body.name,
-    phone: req.body.phone,
-    address: req.body.address,
-    gender: req.body.gender,
+    name: req.body.name ?? "",
+    phone: req.body.phone ?? "",
+    address: req.body.address ?? "",
+    gender: req.body.gender ?? "male",
     birthday: req.body.birthday
       ? moment(req.body.birthday, "DD/MM/YYYY").utc().toDate()
       : null,
@@ -94,10 +100,10 @@ async function update(req, res) {
     }
     data.password = await bcrypt.hash(req.body.password, saltRounds);
   }
-  if(data.birthday){
-    data.birthday =  req.body.birthday
-    ? moment(data.birthday, "DD/MM/YYYY").utc().toDate()
-    : null;
+  if (data.birthday) {
+    data.birthday = req.body.birthday
+      ? moment(data.birthday, "DD/MM/YYYY").utc().toDate()
+      : null;
   }
   const update = await userCol.update(email, data);
   if (!update) {
@@ -347,5 +353,5 @@ module.exports = {
   adminAuthentication,
   verify,
   deleteAccount,
-  unban
+  unban,
 };
