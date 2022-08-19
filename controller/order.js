@@ -87,7 +87,6 @@ async function create(req, res) {
         const newObject = {
           id: item.id,
           quantity: checkInStock[index].stock - item.quantity,
-          price: item.product.price * parseFloat(item.product.sale),
         };
         newProducts.push(newObject);
       });
@@ -103,14 +102,17 @@ async function create(req, res) {
     data.createdAt = new Date();
     data.status = status;
     data.product = cart.product.map((item) => {
+
       return {
         code: item.code,
         quantity: item.quantity,
-        price: item.product.price * parseFloat(item.product.sale),
+        price:
+          item.product.price * (100 - parseFloat(item.product.sale)) /100 * item.quantity,
       };
     });
     data.email = user.email;
     delete data.userId;
+
     const order = await orderCol.create(data);
     if (!order) {
       return res.json({ errorCode: true, data: "System error" });
@@ -167,8 +169,7 @@ async function notifyMomo(req, res) {
 }
 async function getOne(req, res) {
   try {
-    const user = req.user
-    
+    const user = req.user;
   } catch (error) {
     return res.json({ errorCode: true, data: "System error" });
   }
