@@ -42,7 +42,7 @@ async function create(req, res) {
   try {
     let data = req.body;
     for (property of voucherCol.createValidation) {
-      if (data[property]) {
+      if (!data[property]) {
         return res.json({ errorCode: true, data: `Lack of ${property}` });
       }
     }
