@@ -26,6 +26,7 @@ const productProperties = [
   "sold",
   "rate",
   "image",
+  "weight",
 ];
 async function getAll(page, limit, sort, match = {}) {
   let pipline = null;

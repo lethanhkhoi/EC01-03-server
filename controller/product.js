@@ -144,6 +144,7 @@ async function create(req, res) {
     data.image = req.body.image ?? [];
     data.price = parseFloat(req.body.price);
     data.sold = 0;
+    data.weight = req.body.weight ?? 0;
     const product = await productCol.create(data);
     if (!product) {
       return res.json({ errorCode: true, data: "System error" });
