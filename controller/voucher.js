@@ -41,12 +41,12 @@ async function getAllByAdmin(req, res) {
 async function create(req, res) {
   try {
     let data = req.body;
-    data.id = ObjectID().toString();
     for (property of voucherCol.createValidation) {
-      if (data[property] === null) {
+      if (data[property]) {
         return res.json({ errorCode: true, data: `Lack of ${property}` });
       }
     }
+    data.id = ObjectID().toString();
     data.createdAt = new Date();
     const voucher = await voucherCol.create(data);
     if (!voucher) {

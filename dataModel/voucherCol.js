@@ -1,8 +1,8 @@
 const database = require("../utils/database");
 const ObjectID = require("mongodb").ObjectId;
 const { dataPagination } = require("../helperFunction/helper");
-const voucherProperties = ["name", "price", "status", "stock", "description", "endDate"];
-const createValidation = ["name", "price", "status", "stock", "description"];
+const voucherProperties = ["name", "price", "stock", "description", "endDate"];
+const createValidation = ["name", "price", "stock", "description"];
 
 async function getAll(page, limit, sortBy, match) {
   let pipline = null;
