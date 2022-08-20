@@ -1,5 +1,6 @@
 const database = require("../utils/database");
 const voucherCol = require("../dataModel/voucherCol");
+const moment = require("moment");
 const ObjectID = require("mongodb").ObjectId;
 const recordPerPage = 10;
 const defaultPage = 1;
@@ -16,6 +17,16 @@ async function getAll(req, res) {
       user: {
         $ne: user.id,
       },
+      $or: [
+        {
+          endDate: {
+            $gte: moment.utc(new Date(), "DD/MM/YYYY").toDate(),
+          },
+        },
+        {
+          endDate: null
+        },
+      ],
     };
     if (req.query.filters) {
       match["user"] = req.query.filters["userId"];
@@ -48,6 +59,11 @@ async function create(req, res) {
     }
     data.id = ObjectID().toString();
     data.createdAt = new Date();
+    if (req.body.endDate) {
+      data.endDate = data.endDate
+        ? moment.utc(data.endDate, "DD/MM/YYYY").toDate()
+        : null;
+    }
     const voucher = await voucherCol.create(data);
     if (!voucher) {
       return res.json({ errorCode: true, data: "System error" });
@@ -61,7 +77,12 @@ async function create(req, res) {
 async function update(req, res) {
   try {
     const code = req.params.code;
-    const data = req.body;
+    let data = req.body;
+    if (req.body.endDate) {
+      data.endDate = data.endDate
+        ? moment.utc(data.endDate, "DD/MM/YYYY").toDate()
+        : null;
+    }
     const update = await voucherCol.update(code, data);
 
     if (!update) {
