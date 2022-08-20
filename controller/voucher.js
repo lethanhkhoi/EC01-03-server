@@ -64,6 +64,7 @@ async function create(req, res) {
         ? moment.utc(data.endDate, "DD/MM/YYYY").toDate()
         : null;
     }
+    data.user = []
     const voucher = await voucherCol.create(data);
     if (!voucher) {
       return res.json({ errorCode: true, data: "System error" });
@@ -112,7 +113,8 @@ async function claim(req, res) {
       },
     };
     const checkValid = await voucherCol.checkAvailable(match);
-    if (!checkValid) {
+    console.log(checkValid)
+    if (checkValid.length === 0) {
       return res.json({ errorCode: true, data: "Cannot claim this voucher" });
     }
     let userArray = checkValid[0].user;
