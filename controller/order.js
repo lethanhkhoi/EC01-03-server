@@ -174,6 +174,11 @@ async function notifyMomo(req, res) {
 async function getOne(req, res) {
   try {
     const user = req.user;
+    const cart  = await cartCol.getOne(user.id)
+    if(!cart) {
+      return res.json({ errorCode: true, data: "Cannot find order of this account" });
+    }
+    return res.json({ errorCode: null, data: cart });
   } catch (error) {
     return res.json({ errorCode: true, data: "System error" });
   }
