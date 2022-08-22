@@ -113,7 +113,6 @@ async function claim(req, res) {
       },
     };
     const checkValid = await voucherCol.checkAvailable(match);
-    console.log(checkValid)
     if (checkValid.length === 0) {
       return res.json({ errorCode: true, data: "Cannot claim this voucher" });
     }
