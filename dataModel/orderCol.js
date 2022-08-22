@@ -25,6 +25,13 @@ async function create(data) {
 async function getOne(code) {
   return await database.orderModel().findOne({ id: code });
 }
+async function getOneByUserEmail(code) {
+  return await database.orderModel().findOne({ id: code });
+}
+async function history(match, sort) {
+  const result = await database.orderModel().aggregate([...joinProduct(),{$match: match},{$sort: sort}]).toArray();
+  return result
+}
 async function update(code, data) {
   data["updatedAt"] = new Date();
   const result = await database.orderModel().findOneAndUpdate(
@@ -41,4 +48,6 @@ module.exports = {
   creatValidation,
   getOne,
   update,
+  history,
+  getOneByUserEmail
 };

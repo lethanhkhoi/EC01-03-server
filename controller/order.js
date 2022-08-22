@@ -1,5 +1,6 @@
 const orderCol = require("../dataModel/orderCol");
 const productCol = require("../dataModel/productCol");
+const userCol = require("../dataModel/userCol");
 const cartCol = require("../dataModel/cartCol");
 const ObjectID = require("mongodb").ObjectId;
 const { createLink } = require("../utils/payment");
@@ -16,7 +17,7 @@ async function getAll(req, res) {
     let match = {};
     if (req.query.filters) {
       const filters = req.query.filters;
-      match["userId"] = filters["userId"];
+      match["email"] = filters["email"];
     }
     match["deletedAt"] = null;
     const data = await orderCol.getAll(page, limit, sortBy, match);
@@ -28,6 +29,30 @@ async function getAll(req, res) {
     return res.json({ errorCode: true, data: "system error" });
   }
 }
+
+
+async function history(req, res) {
+  try {
+    const user =req.user
+    const sortBy = {
+      createdAt: -1,
+    };
+    let match = {};
+    match["email"] = user.email
+    match["status"] = {
+      $ne: "New"
+    }
+    match["deletedAt"] = null;
+    const data = await orderCol.history(match, sortBy)
+    if (!data) {
+      return res.json({ errorCode: true, data: "System error" });
+    }
+    return res.json({ errorCode: null, data });
+  } catch (error) {
+    return res.json({ errorCode: true, data: "system error" });
+  }
+}
+
 
 async function create(req, res) {
   try {
@@ -173,12 +198,13 @@ async function notifyMomo(req, res) {
 }
 async function getOne(req, res) {
   try {
-    const user = req.user;
-    const cart  = await cartCol.getOne(user.id)
-    if(!cart) {
+    const code = req.params.code
+    const user = await userCol.getDetailByCode(code)
+    const order  = await orderCol.getOneByUserEmail(user.email)
+    if(!order) {
       return res.json({ errorCode: true, data: "Cannot find order of this account" });
     }
-    return res.json({ errorCode: null, data: cart });
+    return res.json({ errorCode: null, data: filterOrder });
   } catch (error) {
     return res.json({ errorCode: true, data: "System error" });
   }
@@ -204,4 +230,5 @@ module.exports = {
   notifyMomo,
   getOne,
   update,
+  history
 };

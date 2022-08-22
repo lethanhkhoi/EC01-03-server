@@ -14,6 +14,13 @@ commands = [
     middleware: ["admin"],
   },
   {
+    name: "history",
+    controller: "order",
+    method: "get",
+    api: "/history",
+    middleware: ["authentication"],
+  },
+  {
     name: "getAll",
     controller: "order",
     method: "get",

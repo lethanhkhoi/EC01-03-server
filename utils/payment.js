@@ -67,7 +67,7 @@ createLink = async (
     const { payUrl } = response.data;
     return [orderId, payUrl];
   } catch (error) {
-    console.log(error);
+    console.log("error", error);
     return null
   }
 };
