@@ -26,7 +26,6 @@ async function update(code, data) {
 }
 
 async function claim(code, data) {
-  console.log(code)
   data["updatedAt"] = new Date();
   const result = await database.voucherModel().findOneAndUpdate(
     { id: code },

@@ -59,9 +59,11 @@ async function register(req, res) {
     if (user) {
       return res.json({ errorCode: true, data: "Tai khoan da ton tai" });
     }
-    const checkPass = req.body.password == req.body.confirmPassword;
-    if (!checkPass) {
-      return res.json({ errorCode: true, data: "Confirm password sai" });
+    if (req.body.confirmPassword) {
+      const checkPass = req.body.password == req.body.confirmPassword;
+      if (!checkPass) {
+        return res.json({ errorCode: true, data: "Confirm password sai" });
+      }
     }
     const password = await bcrypt.hash(req.body.password, saltRounds);
     const data = {
@@ -75,7 +77,7 @@ async function register(req, res) {
       gender: req.body.gender ?? "male",
       birthday: req.body.birthday
         ? moment(req.body.birthday, "DD/MM/YYYY").utc().toDate()
-        : null,
+        : moment(new Date(), "DD/MM/YYYY").utc().toDate(),
       voucher: [],
       role: req.body.role ?? "user",
       createdAt: new Date(),
@@ -218,7 +220,6 @@ async function forgotPassword(req, res) {
 async function userAuthentication(req, res, next) {
   try {
     let token = req.headers["token"];
-
     if (!token) {
       return res.json({
         errCode: true,
