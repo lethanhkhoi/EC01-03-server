@@ -8,9 +8,10 @@ const defaultPage = 1;
 
 async function getAll(req, res) {
   try {
-    const page = req.query.page ?? defaultPage;
-    const limit = req.query.limit ?? recordPerPage;
+    const page = req.query.page ?? 1;
+    const limit = req.query.limit ?? 1000;
     const user = req.user;
+    const checkUser = await userCol.getDetailByCode(user.id);
     const sortBy = {
       createdAt: -1,
     };
@@ -25,13 +26,17 @@ async function getAll(req, res) {
           },
         },
         {
-          endDate: null
+          endDate: null,
         },
       ],
+    };
+    match["id"] = {
+      $nin: checkUser.voucher,
     };
     if (req.query.filters) {
       match["user"] = req.query.filters["userId"];
     }
+    console.log(match);
     const data = await voucherCol.getAll(page, limit, sortBy, match);
     if (!data) {
       return res.json({ errorCode: true, data: "system error" });
@@ -65,7 +70,7 @@ async function create(req, res) {
         ? moment.utc(data.endDate, "DD/MM/YYYY").toDate()
         : null;
     }
-    data.user = []
+    data.user = [];
     const voucher = await voucherCol.create(data);
     if (!voucher) {
       return res.json({ errorCode: true, data: "System error" });
@@ -104,7 +109,7 @@ async function claim(req, res) {
   try {
     const code = req.params.code;
     const user = req.user;
-    let checkUser = await userCol.getDetailByCode(user.id)
+    let checkUser = await userCol.getDetailByCode(user.id);
     let match = {
       $match: {
         id: code,
@@ -118,8 +123,11 @@ async function claim(req, res) {
     if (checkValid.length === 0) {
       return res.json({ errorCode: true, data: "Cannot claim this voucher" });
     }
-    if (checkUser.voucher.includes(checkValid[0].id) ) {
-      return res.json({ errorCode: true, data: "Cannot claim this voucher again" });
+    if (checkUser.voucher.includes(checkValid[0].id)) {
+      return res.json({
+        errorCode: true,
+        data: "Cannot claim this voucher again",
+      });
     }
     let userArray = checkValid[0].user;
     userArray.push(user.id);
@@ -127,9 +135,9 @@ async function claim(req, res) {
       user: userArray,
       stock: checkValid[0].stock - 1,
     };
-    checkUser.voucher.push(code)
+    checkUser.voucher.push(code);
     const result = await voucherCol.claim(code, data);
-    await userCol.update(user.email,checkUser)
+    await userCol.update(user.email, checkUser);
     if (!result) {
       return res.json({ errorCode: true, data: "Claim voucher failed" });
     } else {
