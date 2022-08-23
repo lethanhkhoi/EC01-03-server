@@ -140,7 +140,6 @@ async function create(req, res) {
       };
     });
     data.email = user.email;
-    delete data.userId;
 
     const order = await orderCol.create(data);
     if (!order) {
@@ -156,6 +155,7 @@ async function notifyMomo(req, res) {
   try {
     const { orderId, resultCode, amount } = req.body;
     // Verify for price
+
     let order = await orderCol.getOne(orderId);
     if (order.totalPrice * 23000 !== amount) {
       return res.json({ errorCode: true, data: "Transaction fail" });
@@ -166,7 +166,6 @@ async function notifyMomo(req, res) {
       order.status = "Pending";
       const result = await orderCol.update(orderId, order);
       let cart = await cartCol.getOne(result.userId);
-
       const products = cart.product.map((item) => item.code);
       const checkInStock = await productCol.findByProductId(products);
       let newProducts = [];

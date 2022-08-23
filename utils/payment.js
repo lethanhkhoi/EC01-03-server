@@ -23,7 +23,8 @@ createLink = async (
   const secretKey = "KItonNacd1IPZ3vJKc1IlFeyCmpwRsJL";
 
   const redirectUrl = `${redirectHost}`;
-  const ipnUrl = `https://ec01-03-server.herokuapp.com/checkout/notifyMomo`;
+  // const ipnUrl = `https://ec01-03-server.herokuapp.com/checkout/notifyMomo`;
+  const ipnUrl = `http://localhost:3001/checkout/notifyMomo`;
 
   const orderId = order;
   const orderInfo = `Pay for order ID ${orderId} with Momo`;
@@ -59,6 +60,7 @@ createLink = async (
     userInfo: userInfo,
     signature: signature,
   };
+  console.log(requestBody)
   try {
     const response = await axios.post(
       "https://test-payment.momo.vn:443/v2/gateway/api/create",
