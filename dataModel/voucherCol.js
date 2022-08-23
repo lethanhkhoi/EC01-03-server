@@ -16,14 +16,12 @@ async function create(data) {
 
 async function update(code, data) {
   data["updatedAt"] = new Date();
-  console.log('data', data)
   const result = await database.voucherModel().findOneAndUpdate(
     { id: code },
     {
       $set: data,
     }
   );
-  console.log(result.value)
   return result.value;
 }
 

@@ -269,7 +269,6 @@ async function userAuthentication(req, res, next) {
 async function adminAuthentication(req, res, next) {
   try {
     let token = req.headers["token"];
-
     if (!token) {
       return res.json({
         errorCode: true,

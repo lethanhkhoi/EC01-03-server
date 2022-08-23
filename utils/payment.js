@@ -60,7 +60,6 @@ createLink = async (
     userInfo: userInfo,
     signature: signature,
   };
-  console.log(requestBody)
   try {
     const response = await axios.post(
       "https://test-payment.momo.vn:443/v2/gateway/api/create",

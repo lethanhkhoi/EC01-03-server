@@ -9,9 +9,9 @@ commands = [
   {
     name: "update",
     controller: "order",
-    method: "patch",
+    method: "put",
     api: "/order/:code",
-    middleware: ["admin"],
+    middleware: [],
   },
   {
     name: "history",
