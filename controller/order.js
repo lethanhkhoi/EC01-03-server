@@ -60,7 +60,7 @@ async function create(req, res) {
     data.id = ObjectID().toString();
     data.userId = user.id;
     for (property of orderCol.creatValidation) {
-      if (!data[property]) {
+      if (data[property] === null) {
         return res.json({ errorCode: true, data: `Please input ${property}` });
       }
     }
