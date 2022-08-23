@@ -31,20 +31,19 @@ async function getAll(req, res) {
   }
 }
 
-
 async function history(req, res) {
   try {
-    const user =req.user
+    const user = req.user;
     const sortBy = {
       createdAt: -1,
     };
     let match = {};
-    match["email"] = user.email
+    match["email"] = user.email;
     match["status"] = {
-      $ne: "New"
-    }
+      $ne: "New",
+    };
     match["deletedAt"] = null;
-    const data = await orderCol.history(match, sortBy)
+    const data = await orderCol.history(match, sortBy);
     if (!data) {
       return res.json({ errorCode: true, data: "System error" });
     }
@@ -53,7 +52,6 @@ async function history(req, res) {
     return res.json({ errorCode: true, data: "system error" });
   }
 }
-
 
 async function create(req, res) {
   try {
@@ -141,7 +139,6 @@ async function create(req, res) {
       };
     });
     data.email = user.email;
-
     const order = await orderCol.create(data);
     if (!order) {
       return res.json({ errorCode: true, data: "System error" });
@@ -167,7 +164,6 @@ async function notifyMomo(req, res) {
       order.status = "Pending";
       const result = await orderCol.update(orderId, order);
       let cart = await cartCol.getOne(result.userId);
-      let voucher = await voucherCol.getOne(result.voucherId);
       const products = cart.product.map((item) => item.code);
       const checkInStock = await productCol.findByProductId(products);
       let newProducts = [];
@@ -188,8 +184,11 @@ async function notifyMomo(req, res) {
       }
       cart.product = [];
       await cartCol.update(cart.id, cart);
-      voucher.user = voucher.user.filter(item=> item !== result.userId)
-      await voucherCol.update(result.voucherId, voucher)
+      if (result.voucherId !== "none") {
+        let voucher = await voucherCol.getOne(result.voucherId);
+        voucher.user = voucher.user.filter((item) => item !== result.userId);
+        await voucherCol.update(result.voucherId, voucher);
+      }
       return res.json({ errorCode: null, data: result });
     } else {
       await orderCol.update(orderId, { status: "Cancel" });
@@ -201,11 +200,14 @@ async function notifyMomo(req, res) {
 }
 async function getOne(req, res) {
   try {
-    const code = req.params.code
-    const user = await userCol.getDetailByCode(code)
-    const order  = await orderCol.getOneByUserEmail(user.email)
-    if(!order) {
-      return res.json({ errorCode: true, data: "Cannot find order of this account" });
+    const code = req.params.code;
+    const user = await userCol.getDetailByCode(code);
+    const order = await orderCol.getOneByUserEmail(user.email);
+    if (!order) {
+      return res.json({
+        errorCode: true,
+        data: "Cannot find order of this account",
+      });
     }
     return res.json({ errorCode: null, data: filterOrder });
   } catch (error) {
@@ -233,5 +235,5 @@ module.exports = {
   notifyMomo,
   getOne,
   update,
-  history
+  history,
 };
