@@ -93,7 +93,7 @@ async function create(req, res) {
     };
     let responseData = {
       orderId: data.id,
-      redirectUrl: null,
+      redirectUrl: `https://ec01-03-server.herokuapp.com/`,
     };
     let status = "Pending";
     if (req.body.payment === "momo") {
@@ -110,6 +110,9 @@ async function create(req, res) {
       };
       status = "New";
     } else if (req.body.payment === "cash") {
+      let cart = await cartCol.getOne(user.id);
+      const products = cart.product.map((item) => item.code);
+      const checkInStock = await productCol.findByProductId(products);
       let newProducts = [];
       cart.product.map((item, index) => {
         const newObject = {
@@ -124,6 +127,13 @@ async function create(req, res) {
           errorCode: true,
           data: "Cannot update products' quantity",
         });
+      }
+      cart.product = [];
+      await cartCol.update(cart.id, cart);
+      if (data.voucherId !== "none") {
+        let voucher = await voucherCol.getOne(data.voucherId);
+        voucher.user = voucher.user.filter((item) => item !== data.userId);
+        await voucherCol.update(data.voucherId, voucher);
       }
     }
 

@@ -35,8 +35,8 @@ async function getAll(req, res) {
     };
     if (req.query.filters) {
       match["user"] = req.query.filters["userId"];
+      delete match.id
     }
-    console.log(match);
     const data = await voucherCol.getAll(page, limit, sortBy, match);
     if (!data) {
       return res.json({ errorCode: true, data: "system error" });
