@@ -7,7 +7,7 @@ async function getAll(req, res) {
   if (!data) {
     return res.json({ errorCode: true, data: "system error" });
   }
-  return res.json({ errorCode: true, data });
+  return res.json({ errorCode: null, data });
 }
 
 async function create(req, res) {

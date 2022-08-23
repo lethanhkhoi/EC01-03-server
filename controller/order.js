@@ -233,7 +233,7 @@ async function update(req, res) {
     if (!result) {
       return res.json({ errorCode: true, data: "Update fail" });
     }
-    return res.json({ errorCode: true, data: data });
+    return res.json({ errorCode: null, data: data });
   } catch (error) {
     return res.json({ errorCode: true, data: "System error" });
   }
