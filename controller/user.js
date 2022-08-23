@@ -222,7 +222,7 @@ async function userAuthentication(req, res, next) {
     let token = req.headers["token"];
     if (!token) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "authentication fail",
       });
     }
@@ -232,14 +232,14 @@ async function userAuthentication(req, res, next) {
     } catch (e) {
       res.status(401);
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "jwt malformed",
       });
     }
 
     if (!payload) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "authentication fail",
       });
     }
@@ -249,7 +249,7 @@ async function userAuthentication(req, res, next) {
 
     if (account.length == 0 || account.length > 1) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "account not found",
       });
     }
@@ -272,7 +272,7 @@ async function adminAuthentication(req, res, next) {
 
     if (!token) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "authentication fail",
       });
     }
@@ -281,14 +281,14 @@ async function adminAuthentication(req, res, next) {
       var payload = await jwt.decodeToken(token);
     } catch (e) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "jwt malformed",
       });
     }
 
     if (!payload) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "authentication fail",
       });
     }
@@ -301,7 +301,7 @@ async function adminAuthentication(req, res, next) {
 
     if (account.length == 0 || account.length > 1) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "account not found",
       });
     }
@@ -314,7 +314,7 @@ async function adminAuthentication(req, res, next) {
 
     return next();
   } catch (error) {
-    return res.json({ errCode: true, data: "System error" });
+    return res.json({ errorCode: true, data: "System error" });
   }
 }
 
@@ -323,7 +323,7 @@ async function verify(req, res, next) {
     let token = req.headers["token"];
     if (!token) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "authentication fail",
       });
     }
@@ -332,14 +332,14 @@ async function verify(req, res, next) {
       var payload = await jwt.decodeToken(token);
     } catch (e) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "jwt malformed",
       });
     }
 
     if (!payload) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "authentication fail",
       });
     }
@@ -349,19 +349,19 @@ async function verify(req, res, next) {
 
     if (account.length == 0 || account.length > 1) {
       return res.json({
-        errCode: true,
+        errorCode: true,
         data: "account not found",
       });
     }
     account[0].token = token;
 
     return res.json({
-      errCode: null,
+      errorCode: null,
       data: account[0],
     });
   } catch (error) {
     return res.json({
-      errCode: true,
+      errorCode: true,
       data: "System error",
     });
   }
