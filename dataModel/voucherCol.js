@@ -16,12 +16,14 @@ async function create(data) {
 
 async function update(code, data) {
   data["updatedAt"] = new Date();
+  console.log('data', data)
   const result = await database.voucherModel().findOneAndUpdate(
     { id: code },
     {
       $set: data,
     }
   );
+  console.log(result.value)
   return result.value;
 }
 
@@ -39,7 +41,10 @@ async function claim(code, data) {
 async function checkAvailable(match){
   return await database.voucherModel().aggregate([match]).toArray();
 }
-
+async function getOne(code) {
+  const result = await database.voucherModel().find({ id: code }).toArray();
+  return result[0];
+}
 module.exports = {
   getAll,
   create,
@@ -47,5 +52,6 @@ module.exports = {
   update,
   claim,
   voucherProperties,
-  createValidation
+  createValidation,
+  getOne
 };

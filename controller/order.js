@@ -1,4 +1,5 @@
 const orderCol = require("../dataModel/orderCol");
+const voucherCol = require("../dataModel/voucherCol");
 const productCol = require("../dataModel/productCol");
 const userCol = require("../dataModel/userCol");
 const cartCol = require("../dataModel/cartCol");
@@ -166,6 +167,7 @@ async function notifyMomo(req, res) {
       order.status = "Pending";
       const result = await orderCol.update(orderId, order);
       let cart = await cartCol.getOne(result.userId);
+      let voucher = await voucherCol.getOne(result.voucherId);
       const products = cart.product.map((item) => item.code);
       const checkInStock = await productCol.findByProductId(products);
       let newProducts = [];
@@ -186,6 +188,8 @@ async function notifyMomo(req, res) {
       }
       cart.product = [];
       await cartCol.update(cart.id, cart);
+      voucher.user = voucher.user.filter(item=> item !== result.userId)
+      await voucherCol.update(result.voucherId, voucher)
       return res.json({ errorCode: null, data: result });
     } else {
       await orderCol.update(orderId, { status: "Cancel" });

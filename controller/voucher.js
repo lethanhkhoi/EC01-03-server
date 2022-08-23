@@ -1,4 +1,5 @@
 const database = require("../utils/database");
+const userCol = require("../dataModel/userCol");
 const voucherCol = require("../dataModel/voucherCol");
 const moment = require("moment");
 const ObjectID = require("mongodb").ObjectId;
@@ -103,6 +104,7 @@ async function claim(req, res) {
   try {
     const code = req.params.code;
     const user = req.user;
+    let checkUser = await userCol.getDetailByCode(user.id)
     let match = {
       $match: {
         id: code,
@@ -116,13 +118,18 @@ async function claim(req, res) {
     if (checkValid.length === 0) {
       return res.json({ errorCode: true, data: "Cannot claim this voucher" });
     }
+    if (checkUser.voucher.includes(checkValid[0].id) ) {
+      return res.json({ errorCode: true, data: "Cannot claim this voucher again" });
+    }
     let userArray = checkValid[0].user;
     userArray.push(user.id);
     const data = {
       user: userArray,
       stock: checkValid[0].stock - 1,
     };
+    checkUser.voucher.push(code)
     const result = await voucherCol.claim(code, data);
+    await userCol.update(user.email,checkUser)
     if (!result) {
       return res.json({ errorCode: true, data: "Claim voucher failed" });
     } else {
