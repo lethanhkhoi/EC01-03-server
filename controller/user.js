@@ -105,11 +105,12 @@ async function update(req, res) {
       return res.json({ errorCode: true, data: "Cannot found this account" });
     }
     if (req.body.password) {
-      const checkPass = await bcrypt.compare(data.password, user.password);
+      const checkPass = await bcrypt.compare(data.oldPassword, user.password);
       if (!checkPass) {
-        return res.json({ errorCode: true, data: "Wrong password" });
+        return res.json({ errorCode: true, data: "Wrong previous password" });
       }
       data.password = await bcrypt.hash(req.body.password, saltRounds);
+      delete data.oldPassword
     }
     if (data.birthday) {
       data.birthday = req.body.birthday
