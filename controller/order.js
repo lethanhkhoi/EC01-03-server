@@ -93,7 +93,7 @@ async function create(req, res) {
     };
     let responseData = {
       orderId: data.id,
-      redirectUrl: `https://smartup.vercel.app/`,
+      redirectUrl: `https://smartsup.vercel.app/`,
     };
     let status = "Pending";
     if (req.body.payment === "momo") {
@@ -101,7 +101,7 @@ async function create(req, res) {
         data.id,
         req.body.totalPrice * 23000,
         userInfo,
-        `https://smartup.vercel.app/`,
+        `https://smartsup.vercel.app/`,
         `${req.protocol}://${req.get("host")}`
       );
       responseData = {
