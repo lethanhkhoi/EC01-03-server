@@ -55,5 +55,12 @@ commands = [
     api: "/unban/:code",
     middleware: ["admin"],
   },
+  {
+    name: "forgotPassword",
+    controller: "user",
+    method: "post",
+    api: "/forgotPassword",
+    middleware: [],
+  }
 ];
 module.exports = commands;

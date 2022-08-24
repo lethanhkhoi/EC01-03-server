@@ -1,3 +1,6 @@
 {
-    "tokenKey": "EC0103"
+  "tokenKey": "EC0103",
+  "GOOGLE_CLIENT_ID": "153967824066-18n66bp6tht4ngct7oo7alklposltbad.apps.googleusercontent.com",
+  "GOOGLE_CLIENT_SECRET": "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",
+  "GOOGLE_REFRESH_TOKEN": "1//04wmUA5UjaOt4CgYIARAAGAQSNwF-L9Ir9VuSGo067FAR7abv2vOfdxi4mU9VEYJkqn530FEivrb5AyEnWlYNCYxVruF0cLxFx00"
 }

@@ -110,7 +110,7 @@ async function update(req, res) {
         return res.json({ errorCode: true, data: "Wrong previous password" });
       }
       data.password = await bcrypt.hash(req.body.password, saltRounds);
-      delete data.oldPassword
+      delete data.oldPassword;
     }
     if (data.birthday) {
       data.birthday = req.body.birthday
@@ -200,9 +200,9 @@ async function forgotPassword(req, res) {
     if (!user) {
       return res.json({ errorCode: true, data: "This account is not exist" });
     }
-    const newpass = Math.floor(Math.random() * 10000) + 1000;
-    data.password = bcrypt.hash(newpass, saltRounds);
-    const update = await userCol.update(user.code, data);
+    const newpass = Math.floor(Math.random() * 10000) + 100000;
+    data.password = await bcrypt.hash(newpass.toString(), saltRounds);
+    const update = await userCol.update(user.email, data);
     if (!update) {
       return res.json({ errorCode: true, data: "System error" });
     }
@@ -211,8 +211,8 @@ async function forgotPassword(req, res) {
         update[property] = req.body[property];
       }
     }
-    sendPass(data.email, newpass);
-    return res.json({ errorCode: false, data: update });
+    //await sendPass(newpass, data.email);
+    return res.json({ errorCode: false, data: `Your new password was successfully updated to ${newpass}` });
   } catch (error) {
     return res.json({ errorCode: true, data: "system error" });
   }
