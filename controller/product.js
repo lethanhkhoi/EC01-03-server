@@ -115,6 +115,7 @@ async function getDetail(req, res) {
       id: {
         $ne: data.id,
       },
+      deletedAt: null
     };
     const relatedProducts = await productCol.getAll(
       1,
