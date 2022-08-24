@@ -157,7 +157,10 @@ async function create(req, res) {
 async function update(req, res) {
   try {
     const code = req.params.code;
-    const data = req.body;
+    let data = req.body;
+    if(data.price){
+      data.price = parseFloat(data.price);
+    }
     const update = await productCol.update(code, data);
     if (!update) {
       return res.json({ errorCode: true, data: "System error" });
