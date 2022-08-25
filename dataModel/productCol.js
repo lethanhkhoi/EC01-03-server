@@ -36,7 +36,6 @@ async function getAll(page, limit, sort, match = {}) {
     metadata: result[0].metadata,
     data: result[0].data,
   };
-  console.log(result[0].metadata)
   return newResult;
 }
 

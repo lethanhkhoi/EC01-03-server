@@ -120,7 +120,10 @@ async function getDetail(req, res) {
       id: {
         $ne: data.id,
       },
-      deletedAt: null
+      deletedAt: null,
+      stock: {
+        $gte: 1,
+      },
     };
     const relatedProducts = await productCol.getAll(
       1,
