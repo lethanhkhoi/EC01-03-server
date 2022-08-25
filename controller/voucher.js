@@ -35,7 +35,7 @@ async function getAll(req, res) {
     };
     if (req.query.filters) {
       match["user"] = req.query.filters["userId"];
-      delete match.id
+      delete match.id;
     }
     const data = await voucherCol.getAll(page, limit, sortBy, match);
     if (!data) {
@@ -85,11 +85,9 @@ async function update(req, res) {
   try {
     const code = req.params.code;
     let data = req.body;
-    if (req.body.endDate) {
-      data.endDate = data.endDate
-        ? moment.utc(data.endDate, "DD/MM/YYYY").toDate()
-        : null;
-    }
+    data.endDate = req.body.endDate
+      ? moment.utc(req.body.endDate, "DD/MM/YYYY").toDate()
+      : null;
     const update = await voucherCol.update(code, data);
 
     if (!update) {
