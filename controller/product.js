@@ -18,6 +18,11 @@ async function getAll(req, res) {
       if (filters["name"]) {
         match["name"] = new RegExp([filters["name"]].join(""), "i");
       }
+      if (filters["stock"]) {
+        match["stock"] = {
+          $gte: 1,
+        };
+      }
       if (filters["category"]) {
         const filterCategory = filters["category"].split(",");
         const category = await categoryCol.getAll({

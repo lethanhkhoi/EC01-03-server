@@ -19,6 +19,9 @@ async function getAll(req, res) {
       user: {
         $ne: user.id,
       },
+      stock: {
+        $gte: 1,
+      },
       $or: [
         {
           endDate: {
