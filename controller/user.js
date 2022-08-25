@@ -32,6 +32,11 @@ async function login(req, res) {
     if (!user) {
       return res.json({ errorCode: true, data: "Tai khoan khong ton tai" });
     }
+    if(req.body.role){
+      if(user.role!==req.body.role){
+        return res.json({ errorCode: true, data: `Khong the dang nhap bang tai khoan ${user.role} cho trang nay` });
+      }
+    }
     const checkPass = await bcrypt.compare(req.body.password, user.password);
     if (!checkPass) {
       return res.json({ errorCode: true, data: "Pass sai" });
