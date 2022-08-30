@@ -39,7 +39,7 @@ commands = [
     controller: "order",
     method: "post",
     api: "/checkout",
-    middleware: ["authentication"],
+    middleware: [],
   },
 ];
 module.exports = commands;
