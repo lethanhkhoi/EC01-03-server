@@ -75,19 +75,25 @@ async function create(req, res) {
     ) {
       return res.json({ errorCode: true, data: `Cannot found products` });
     }
-    const check = false;
+    let check = -1;
+    console.log(checkInStock);
+    console.log(cart);
     checkInStock.map((item, index) => {
-      if (
-        item.id === cart.product[index].code &&
-        item.stock < cart.product[index].quantity
-      ) {
-        check = true;
-      }
+      cart.product.map((item2, index2) => {
+        console.log(item);
+        console.log(item2);
+        if (item.id === item2.code && item.stock < item2.quantity) {
+          console.log("123");
+          check = index;
+        }
+      });
     });
-    if (check === true) {
+    if (check !== -1) {
+      console.log(check);
+
       return res.json({
         errorCode: true,
-        data: `Out of stock ${item.name} only has ${item.stock}`,
+        data: `Out of stock ${checkInStock[check].name} only has ${checkInStock[check].stock}`,
       });
     }
 
