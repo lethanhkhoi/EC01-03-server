@@ -127,7 +127,7 @@ async function create(req, res) {
       let newProducts = [];
       cart.product.map((item, index) => {
         const newObject = {
-          id: item.id,
+          id: item.code,
           quantity: checkInStock[index].stock - item.quantity,
         };
         newProducts.push(newObject);
