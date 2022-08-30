@@ -79,12 +79,12 @@ async function create(req, res) {
     console.log(checkInStock);
     console.log(cart);
     checkInStock.map((item, index) => {
-      cart.product.map((item2, index2) => {
+      return cart.product.map((item2, index2) => {
         console.log(item);
         console.log(item2);
         if (item.id === item2.code && item.stock < item2.quantity) {
           console.log("123");
-          check = index;
+          return check = index;
         }
       });
     });
